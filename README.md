@@ -12,7 +12,7 @@ This is our beginning of coursework for Group2 where we are just working on init
 Austin
 Eshal
 Lewis
-Pablo
+Pablo Ramallo Amador
 ## Badges
 ![workflow](https://github.com/EshalImran27/SeMethods2/actions/workflows/main.yml/badge.svg)
 
