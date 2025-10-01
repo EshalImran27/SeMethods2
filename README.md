@@ -16,6 +16,14 @@ Pablo
 ## Badges
 ![workflow](https://github.com/EshalImran27/SeMethods2/actions/workflows/main.yml/badge.svg)
 
-[![LICENSE](https://img.shields.io/github/license/EshalImran27/SeMethods2.svg?style=flat-square)](https://github.com/EshalImran27/SeMethods2/blob/master/LICENSE)
+- License
+  [![LICENSE](https://img.shields.io/github/license/EshalImran27/SeMethods2.svg?style=flat-square)](https://github.com/EshalImran27/SeMethods2/blob/master/LICENSE)
 
-[![Releases](https://img.shields.io/github/release/EshalImran27/SeMethods2/all.svg?style=flat-square)](https://github.com/EshalImran27/SeMethods2/releases)
+- Release
+  [![Releases](https://img.shields.io/github/release/EshalImran27/SeMethods2/all.svg?style=flat-square)](https://github.com/EshalImran27/SeMethods2/releases)
+
+- Master Build Status
+[![Build Status](https://img.shields.io/github/actions/workflow/status/EshalImran27/SeMethods2/main.yml?branch=master&style=flat-square)](https://github.com/EshalImran27/SeMethods2/actions)
+
+- Develop Build Status
+[![Build Status](https://img.shields.io/github/actions/workflow/status/EshalImran27/SeMethods2/main.yml?branch=develop&style=flat-square)](https://github.com/EshalImran27/SeMethods2/actions)
