@@ -14,6 +14,11 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+      - name: Build with Maven
+        run: mvn clean package
+
+      - name: Verify JAR exists
+        run: ls -la target/
 
       - name: Cleanup previous runs
         run: |
@@ -30,8 +35,7 @@ jobs:
           docker run -d --name mongo-dbserver --network se-methods mongo
           sleep 10  # Wait for MongoDB to start
 
-      - name: Build with Maven
-        run: mvn clean package
+
 
       - name: Build Docker image
         run: docker build -t se_methods .
@@ -41,3 +45,4 @@ jobs:
 
       - name: View logs
         run: docker logs devopscontainer
+
