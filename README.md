@@ -9,7 +9,7 @@ This is our beginning of coursework for Group2 where we are just working on init
 - Docker
 
 ## Authors
-Austin
+Kaung Khant Kyaw
 Eshal
 Lewis
 Pablo Ramallo Amador
