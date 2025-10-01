@@ -13,3 +13,5 @@ Austin
 Eshal
 Lewis
 Pablo
+## Badges
+![workflow](https://github.com/EshalImran27/SeMethods2/actions/workflows/main.yml/badge.svg)
