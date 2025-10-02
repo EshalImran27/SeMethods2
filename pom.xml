@@ -1,51 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- pom.xml - Maven Project Object Model configuration file for the SeMethods2 project.
+     This file is essential for building, packaging, and managing dependencies of the project
+     in a consistent and reproducible manner. -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!-- Maven POM model version -->
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- Project coordinates -->
+    <!-- Your organization or project namespace -->
     <groupId>com.napier.sem2</groupId>
+    <!-- The name of the built artifact (JAR) -->
     <artifactId>SeMethods2</artifactId>
+    <!-- Project version -->
     <version>0.1.0.2</version>
 
+    <!-- Project-wide properties -->
     <properties>
+        <!-- Java compiler source and target versions -->
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <!-- Ensure UTF-8 encoding for source files -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <!-- Project dependencies -->
     <dependencies>
+
+        <!-- MongoDB Java driver to interact with MongoDB -->
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver</artifactId>
             <version>3.6.4</version>
         </dependency>
+
     </dependencies>
+
+    <!-- Build configuration -->
     <build>
         <plugins>
+
+            <!-- Maven Assembly Plugin -->
+            <!-- Used to create a "fat JAR" (JAR with all dependencies included) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.3.0</version>
+
                 <configuration>
+
                     <archive>
                         <manifest>
+                            <!-- Specify the main class to run when the JAR is executed -->
                             <mainClass>com.napier.sem2.App</mainClass>
                         </manifest>
                     </archive>
+
                     <descriptorRefs>
+                        <!-- Include all project dependencies inside the JAR -->
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
+
                 </configuration>
+
                 <executions>
                     <execution>
+
                         <id>make-assembly</id>
+                        <!-- Run during the package phase -->
                         <phase>package</phase>
                         <goals>
+                            <!-- Generate a single JAR with dependencies -->
                             <goal>single</goal>
                         </goals>
+
                     </execution>
                 </executions>
+
             </plugin>
+
         </plugins>
     </build>
 
