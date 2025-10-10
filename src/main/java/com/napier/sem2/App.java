@@ -71,6 +71,102 @@ public class App
     }
 
     /**
+     * Get all countries in the world organised by largest population to smallest
+     */
+    public void getCountriesByPopulation()
+    {
+        try
+        {
+            // Create an SQL statement
+            Statement stmt = con.createStatement();
+
+            // Create string for SQL statement
+            String strSelect =
+                    "SELECT code, name, continent, region, population, capital " +
+                            "FROM country " +
+                            "ORDER BY population DESC";
+
+            // Execute SQL statement
+            ResultSet rset = stmt.executeQuery(strSelect);
+
+            // Process and display results
+            System.out.println("All countries in the world by population (largest to smallest):");
+            System.out.println("=================================================================");
+            System.out.println(String.format("%-3s %-30s %-15s %-20s %10s %s",
+                    "Code", "Name", "Continent", "Region", "Population", "Capital"));
+            System.out.println("-----------------------------------------------------------------");
+
+            int count = 0;
+            while (rset.next())
+            {
+                Country country = new Country();
+                country.code = rset.getString("code");
+                country.name = rset.getString("name");
+                country.continent = rset.getString("continent");
+                country.region = rset.getString("region");
+                country.population = rset.getInt("population");
+                country.capital = rset.getString("capital");
+
+                // Display this country
+                displayCountry(country);
+                count++;
+
+                // Limit output for demonstration
+                if (count >= 20) {
+                    System.out.println("... and " + (getTotalCountries() - 20) + " more countries");
+                    break;
+                }
+            }
+
+            System.out.println("Total countries displayed: " + count);
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get country details");
+        }
+    }
+
+    /**
+     * Display a country's information
+     */
+    public void displayCountry(Country country)
+    {
+        if (country != null)
+        {
+            System.out.println(
+                    String.format("%-3s %-30s %-15s %-20s %,10d %s",
+                            country.code,
+                            country.name,
+                            country.continent,
+                            country.region,
+                            country.population,
+                            country.capital != null ? country.capital : "N/A")
+            );
+        }
+    }
+
+    /**
+     * Helper method to get total number of countries
+     */
+    private int getTotalCountries()
+    {
+        try
+        {
+            Statement stmt = con.createStatement();
+            ResultSet rset = stmt.executeQuery("SELECT COUNT(*) as total FROM country");
+            if (rset.next()) {
+                return rset.getInt("total");
+            }
+            return 0;
+        }
+        catch (Exception e)
+        {
+            return 0;
+        }
+    }
+
+    /**
      * Main method - entry point for the application
      */
     public static void main(String[] args)
@@ -80,18 +176,8 @@ public class App
 
         // Connect to database
         a.connect();
-
-        // Test the connection by displaying tables
-        try {
-            Statement stmt = a.con.createStatement();
-            ResultSet rset = stmt.executeQuery("SHOW TABLES");
-            System.out.println("Tables in World database:");
-            while (rset.next()) {
-                System.out.println(" - " + rset.getString(1));
-            }
-        } catch (SQLException e) {
-            System.out.println("Error querying database: " + e.getMessage());
-        }
+        // Get all countries by population
+        a.getCountriesByPopulation();
 
         // Disconnect from database
         a.disconnect();
