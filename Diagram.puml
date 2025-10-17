@@ -5,6 +5,7 @@ title Use Case Diagram
 
 ' --- Actors ---
 actor "Analyst" as Analyst
+rectangle Database
 
 ' --- Systems ---
 
