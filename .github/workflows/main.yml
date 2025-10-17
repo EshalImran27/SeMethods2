@@ -1,12 +1,12 @@
-name: CI
+name: Build and Test World Database App
 on: push
 
 jobs:
   build:
-    name: Hello world action
+    name: Build and Test Application
     runs-on: ubuntu-22.04
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up JDK 17
@@ -14,35 +14,12 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+
       - name: Build with Maven
-        run: mvn clean package
+        run: mvn -B package --file pom.xml
 
-      - name: Verify JAR exists
-        run: ls -la target/
+      - name: Set up Docker Compose
+        run: docker compose version
 
-      - name: Cleanup previous runs
-        run: |
-          docker stop devopscontainer || true
-          docker rm devopscontainer || true
-          docker stop mongo-dbserver || true
-          docker rm mongo-dbserver || true
-          docker network rm se-methods || true
-
-      - name: Setup network and MongoDB
-        run: |
-          docker network create --driver bridge se-methods
-          docker pull mongo
-          docker run -d --name mongo-dbserver --network se-methods mongo
-          sleep 10  # Wait for MongoDB to start
-
-
-
-      - name: Build Docker image
-        run: docker build -t se_methods .
-
-      - name: Run application container
-        run: docker run --network se-methods --name devopscontainer se_methods
-
-      - name: View logs
-        run: docker logs devopscontainer
-
+      - name: Run application with World database
+        run: docker compose up --abort-on-container-exit
