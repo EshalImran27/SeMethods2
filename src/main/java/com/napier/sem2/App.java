@@ -2,6 +2,31 @@
 package com.napier.sem2;
 //import all the sql libraries so as to read the sql data base and perform other functions
 import java.sql.*;
+
+/**
+ * ---------------------------------------------------------------------------
+ * Application Name: World Population Information App
+ * Package: com.napier.sem2
+ *
+ * Description:
+ * This application connects to a MySQL "world" database and retrieves
+ * population data, displaying them. It demonstrates database connectivity, data retrieval,
+ * and formatted output in Java using JDBC.
+ *
+ * Features:
+ * - Establishes connection to a MySQL database with retry logic.
+ * - Retrieves and displays a list of countries with their population details.
+ * - Handles SQL and connection-related exceptions gracefully.
+ * - Closes the database connection properly after use.
+ *
+ * Authors: Lewis Forsyth
+ * Eshal Imran
+ * Kaung Kyaw
+ * Pablo Ramallo Amador
+ * Date: 17/10/2025
+ * ---------------------------------------------------------------------------
+ */
+
 //The class App that contains our entire population information needed by organiser
 public class App
 {
