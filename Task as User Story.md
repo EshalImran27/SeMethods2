@@ -1,6 +1,6 @@
 ###### **Country Reports**
 
-**Title:** Country report	**Priority:** High	**Estimate:** Friday, 28 November 2025, 6:00 PM	**Owner:** Pablo Ramallo
+**Title:** Country report	**Priority:** High	**Estimate:** Friday, 28 November 2025, 6:00 PM	**Owner:** Eshal Imran
 
 **User Story:**
 
@@ -20,7 +20,7 @@ Acceptance Criteria:
 
 
 
-**Title:** Top country report	**Priority:** High	**Estimate:** Friday, 28 November 2025, 6:00 PM	**Owner:** Eshal Imran
+**Title:** Top country report	**Priority:** High	**Estimate:** Friday, 28 November 2025, 6:00 PM	**Owner:** Pablo Ramallo
 
 **User Story:**
 
