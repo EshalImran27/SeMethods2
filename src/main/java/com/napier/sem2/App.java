@@ -2,7 +2,7 @@
 package com.napier.sem2;
 //import all the sql libraries so as to read the sql data base and perform other functions
 import java.sql.*;
-import java.util.ArrayList;
+
 import java.util.List;
 
 //The class App that contains our entire population information needed by organiser
@@ -58,9 +58,6 @@ public class App
                 System.out.println("Error closing connection to database");
             }
         }
-    }
-    public Connection getConnection(){
-        return con;
     }
     //method to the function to get the population in countries in the whole world
     public void getCountriesByWorldPop(){
