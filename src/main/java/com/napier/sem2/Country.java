@@ -15,6 +15,7 @@ public class Country {
     public String capital; //capital city of the specific country
     public int population; //total population of that country
 
+    //adding constructors for the class
     public Country() {}
     public Country(String code, String name, String continent, String region,
                     String capital, int population){
@@ -25,8 +26,10 @@ public class Country {
         this.capital = capital;
         this.population = population;
     }
+    //public method to retrieve the population of the countries in the whole world
     public static List<Country> getCountriesByPopulationInWorld(Connection connection){
         List<Country> countries = new ArrayList<>();
+        //database connection check
         if (connection == null){
             System.out.println("Database Connection is null");
             return countries;
@@ -36,7 +39,7 @@ public class Country {
             String sqlStatement = "SELECT code, name, continent, region, capital, population " +
                     "FROM country " +
                     "ORDER BY population DESC";
-            ResultSet rset=stmt.executeQuery(sqlStatement);
+            ResultSet rset=stmt.executeQuery(sqlStatement);//execution of sql query
             while(rset.next()){
                 Country country = new Country();
                 country.code = rset.getString("code");
@@ -45,20 +48,19 @@ public class Country {
                 country.region = rset.getString("region");
                 country.population = rset.getInt("population");
                 country.capital = rset.getString("capital");
-
                 countries.add(country);
-
             }
             rset.close();
             stmt.close();
         } catch(SQLException e){
-            System.out.println("Error getting countries by population" +
+            System.out.println("Error getting countries by population in world" +
                     e.getMessage());
             System.out.println("failed to get country details");
         }
         return countries;
 
     }
+    //public method to get country population in continents
     public static List<Country> getCountriesByPopulationInContinent(Connection connection, String continent){
         List<Country> countries = new ArrayList<>();
         if (connection == null){
@@ -93,9 +95,8 @@ public class Country {
             System.out.println("failed to get country details");
         }
         return countries;
-
     }
-
+    //public method to get the count of total countries in the world
     public static int getTotalCountries(Connection connection){
         if (connection == null){
             System.out.println("Database Connection is null");
@@ -118,24 +119,20 @@ public class Country {
                     e.getMessage());
             return 0;
         }
-
-
     }
+    //public method to display each country detail separately
     public  void display(){
-        if(this.name != null){
-             System.out.println(
-                     String.format("%-3s %-30s %-15s %-20s %10d %s",
-                             this.code != null ? this.code : "N/A",
-                             this.name != null ? this.name : "N/A",
-                             this.continent != null ? this.continent : "N/A",
-                             this.region != null ? this.region : "N/A",
-                             this.population,
-                             this.capital != null ? this.capital : "N/A"));
-
-         }
+        System.out.println(
+                String.format("%-3s %-30s %-15s %-20s %10d %s",
+                        this.code != null ? this.code : "N/A",
+                        this.name != null ? this.name : "N/A",
+                        this.continent != null ? this.continent : "N/A",
+                        this.region != null ? this.region : "N/A",
+                        this.population,
+                        this.capital != null ? this.capital : "N/A"));
     }
-
-    public static void displayCountries(List<Country> countries, int limit) {
+    //public method to display the entire list of country population
+    public static void displayCountries(List<Country> countries) {
         if (countries == null || countries.isEmpty()) {
             System.out.println("No countries can be displayed");
             return;
@@ -145,22 +142,26 @@ public class Country {
                 "Code", "Name", "Continent", "Region", "Population", "Capital"));
         System.out.println("-----------------------------------------------------------------");
         int count = 0;
+        //int DisplayCount = 0;
         int total = countries.size();
 
         for (Country country : countries) {
+            if (country == null) {
+                System.out.println("Warning: country is null");
+                count++;
+                continue;
+            }
             country.display();
             count++;
-
+           // DisplayCount++;
             // Limit output if specified
-            if (limit > 0 && count >= limit) {
+    /*        if (limit > 0 && DisplayCount >= limit) {
                 System.out.println("... and " + (total - limit) + " more countries");
                 break;
             }
-
-
         }
-        System.out.println("Total countries displayed: " + Math.min(count, limit > 0 ? limit : count));
-
-}
-
+        System.out.println("Total countries displayed: " + DisplayCount);
+     */
+        }
+    }
 }

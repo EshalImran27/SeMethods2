@@ -63,13 +63,13 @@ public class App
     public void getCountriesByWorldPop(){
         List<Country> countries = Country.getCountriesByPopulationInWorld(con);
         System.out.println("All countries in the world by population (largest to smallest):");
-        Country.displayCountries(countries, 20);
+        Country.displayCountries(countries);
     }
     //method to the function to get the population in countries in a continent
     public void getCountriesByContinentPop(){
         List<Country> countries = Country.getCountriesByPopulationInContinent(con, "Europe");
         System.out.println("All countries in a continent by population (largest to smallest):");
-        Country.displayCountries(countries, 20);
+        Country.displayCountries(countries);
     }
 
     //Main method - entry point for the application
