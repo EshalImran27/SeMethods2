@@ -1,5 +1,6 @@
 package com.napier.sem2;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.*;
 import static org.mockito.Mockito.*;//to add mock objects
 import java.io.ByteArrayOutputStream;
@@ -32,7 +33,7 @@ public class CountryTests
     }
     //Test for parameterised Constructor
     @Test
-    void parameterisedConstructorWithAllParameters()
+    public void parameterisedConstructorWithAllParameters()
     {
         Country country = new Country("FRA", "France", "Europe", "Western Europe", "Paris", 22903129);
         assertEquals("FRA", country.code);
@@ -44,7 +45,7 @@ public class CountryTests
     //Tests for DisplayCountries Method
     //1. NULL TEST
     @Test
-    void printCountriesTestNull()
+    public void printCountriesTestNull()
     {
         Country.displayCountries(null);
         String result = output.toString();
@@ -52,7 +53,7 @@ public class CountryTests
     }
     //2. EMPTY LIST
     @Test
-    void printCountriesTestEmpty() {
+    public void printCountriesTestEmpty() {
         List<Country> emptyList = new ArrayList<>();
         Country.displayCountries(emptyList);
         String result = output.toString();
@@ -60,7 +61,7 @@ public class CountryTests
     }
     //3. NULL MEMBER IN LIST
     @Test
-    void printCountriesTestNullMember()
+    public void printCountriesTestNullMember()
     {
         List<Country> list = new ArrayList<>();
         list.add(null);
@@ -70,7 +71,7 @@ public class CountryTests
     }
     //4. NORMAL LIST
     @Test
-    void printCountriesNormalList()
+    public void printCountriesNormalList()
     {
         List<Country> list = new ArrayList<>();
         Country tempCountry = new Country();
@@ -87,7 +88,7 @@ public class CountryTests
     //Tests for getCountriesByPopulationInWorld Method
     // 1.NULL DATABASE
     @Test
-    void printNullDatabaseConnection()
+    public void printNullDatabaseConnection()
     {
         List<Country> list = Country.getCountriesByPopulationInWorld(null);
         String result = output.toString();
@@ -95,7 +96,7 @@ public class CountryTests
     }
     //2.RESULTSET EMPTY
     @Test
-    void printEmptyResultSet() throws Exception{
+    public void printEmptyResultSet() throws Exception{
        Connection mockCon = mock(Connection.class);
        Statement mockStmt = mock(Statement.class);
        ResultSet mockRs = mock(ResultSet.class);
@@ -106,7 +107,7 @@ public class CountryTests
        assertTrue(list.isEmpty(), ("List should be empty"));
     }
     @Test
-    void creatingACountryCorrectlyAfterSqlQuery() throws SQLException {
+    public void creatingACountryCorrectlyAfterSqlQuery() throws SQLException {
         Connection mockCon = mock(Connection.class);
         Statement mockStmt = mock(Statement.class);
         ResultSet mockRs = mock(ResultSet.class);
@@ -132,7 +133,7 @@ public class CountryTests
     }
     //3.SQL EXCEPTION HANDLING
     @Test
-    void printSQLException() throws Exception{
+    public void printSQLException() throws Exception{
         Connection mockCon = mock(Connection.class);
         when(mockCon.createStatement()).thenThrow(new SQLException("Connection failed"));
         List<Country> list = Country.getCountriesByPopulationInWorld(mockCon);
@@ -141,14 +142,14 @@ public class CountryTests
     //Tests for getCountriesByPopulationInContinent Method
     //1. NULL DATABASE
     @Test
-    void printNullDatabaseConnectionInContinent(){
+    public void printNullDatabaseConnectionInContinent(){
         List<Country> list = Country.getCountriesByPopulationInContinent(null,"Asia");
         String result = output.toString();
         assertTrue(result.contains("Database Connection is null"), ("Error message not found"));
     }
     //2. NULL CONTINENT PARAMETER
     @Test
-    void printNullContinent() throws SQLException {
+    public void printNullContinent() throws SQLException {
         Connection mockCon = mock(Connection.class);
         PreparedStatement mockStmt = mock(PreparedStatement.class);
         ResultSet mockRs = mock(ResultSet.class);
@@ -161,7 +162,7 @@ public class CountryTests
     }
     //result of sql query
     @Test
-    void creatingACountryCorrectlyInContinentAfterSqlQuery() throws SQLException {
+    public void creatingACountryCorrectlyInContinentAfterSqlQuery() throws SQLException {
         Connection mockCon = mock(Connection.class);
         PreparedStatement mockStmt = mock(PreparedStatement.class);
         ResultSet mockRs = mock(ResultSet.class);
@@ -190,7 +191,7 @@ public class CountryTests
     //Tests for display Method
     //1.ALL POPULATED VALUES
     @Test
-    void printAllPopulatedValues(){
+    public void printAllPopulatedValues(){
         Country tempCon= new Country();
         tempCon.code="FRA";
         tempCon.name="France";
@@ -205,7 +206,7 @@ public class CountryTests
     }
     //2.NULL CODE
     @Test
-    void printDisplayWithNullCode(){
+    public void printDisplayWithNullCode(){
         Country tempCon= new Country();
         tempCon.code=null;
         tempCon.name="France";
@@ -218,7 +219,7 @@ public class CountryTests
     }
     //3.NULL NAME
     @Test
-    void printDisplayWithNullName(){
+    public void printDisplayWithNullName(){
         Country tempCon= new Country();
         tempCon.code="FRA";
         tempCon.name=null;
@@ -231,7 +232,7 @@ public class CountryTests
     }
     //4.NULL CONTINENT
     @Test
-    void printDisplayWithNullContinent(){
+    public void printDisplayWithNullContinent(){
         Country tempCon= new Country();
         tempCon.code="FRA";
         tempCon.name="France";
@@ -244,7 +245,7 @@ public class CountryTests
     }
     //5. ZERO POPULATION
     @Test
-    void printDisplayWithNoPopulation(){
+    public void printDisplayWithNoPopulation(){
         Country tempCon= new Country();
         tempCon.code="FRA";
         tempCon.name="France";
