@@ -35,9 +35,7 @@ public class CountryQueryTests {
     }
 
     private void setUpMockResultsWithData() throws SQLException {
-        when(MockResultSet.next()).thenReturn(true);
-        when(MockResultSet.next()).thenReturn(true);
-        when(MockResultSet.next()).thenReturn(false);
+        when(MockResultSet.next()).thenReturn(true,true,false);
         when(MockResultSet.getString("code"))
                 .thenReturn("CHN")
                 .thenReturn("IND");
@@ -71,6 +69,117 @@ public class CountryQueryTests {
         assertTrue(result.contains("Database Connection is null"),
                 "Should display null connection error");
     }
+
+    @Test
+    public void testGetCountriesByPopulationInWorldWithData() throws SQLException {
+        setUpMockResultsWithData();
+        MockCountryQueries.getCountriesByPopulationInWorld();
+        String result = outContent.toString();
+        assertTrue(result.contains("China"), "Error message not found");
+        assertTrue(result.contains("India"), "Error message not found");
+    }
+    @Test
+    public void testGetCountriesByPopulationInWorldNoData() throws SQLException {
+        setupEmptyResultSet();
+        MockCountryQueries.getCountriesByPopulationInWorld();
+        String result = outContent.toString();
+        assertTrue(result.contains("No countries can be displayed"), "Error message not found");
+    }
+    @Test
+    public void testGetCountriesByPopulationInWorldWithSQLException() throws SQLException {
+        when(MockCon.createStatement()).thenThrow(new  SQLException());
+        MockCountryQueries.getCountriesByPopulationInWorld();
+        String result = outContent.toString();
+        assertTrue(result.contains("SQL Exception"), "Error message not found");
+    }
+    @Test
+    public void testGetCountriesByPopulationInValidContinent() throws SQLException {
+        setUpMockResultsWithData();
+        MockCountryQueries.getCountriesByPopulationInContinent("Asia");
+        String result = outContent.toString();
+        assertTrue(result.contains("China"), "Error message not found");
+        assertTrue(result.contains("India"), "Error message not found");
+    }
+    @Test
+    public void testGetCountriesByPopulationInContinentWithSQLException() throws SQLException {
+        when(MockCon.createStatement()).thenThrow(new  SQLException());
+        MockCountryQueries.getCountriesByPopulationInContinent("Asia");
+        String result = outContent.toString();
+        assertTrue(result.contains("SQL Exception"), "Error message not found");
+    }
+    @Test
+    public void testGetCountriesByPopulationInValidRegion() throws SQLException {
+        setUpMockResultsWithData();
+        MockCountryQueries.getCountriesByPopulationInRegion("Eastern Asia");
+        String result = outContent.toString();
+        assertTrue(result.contains("China"), "Error message not found");
+    }
+    @Test
+    public void testGetCountriesByPopulationInRegionWithSQLException() throws SQLException {
+        when(MockCon.createStatement()).thenThrow(new  SQLException());
+        MockCountryQueries.getCountriesByPopulationInRegion("Caribbean");
+        String result = outContent.toString();
+        assertTrue(result.contains("SQL Exception"), "Error message not found");
+    }
+    @Test
+    public void getTopCountriesInWorldWithValidNumber() throws SQLException {
+        setUpMockResultsWithData();
+        MockCountryQueries.getTopCountriesInWorld(5);
+        String result = outContent.toString();
+        assertTrue(result.contains("Top 5 Countries in the world ranked from largest population to smallest: "), "Error message not found");
+    }
+    @Test
+    public void getTopCountriesInWorldWithZero() throws SQLException {
+        setupEmptyResultSet();
+        MockCountryQueries.getTopCountriesInWorld(0);
+        String result = outContent.toString();
+        assertTrue(result.contains("No countries can be displayed"), "Error message not found");
+    }
+    @Test
+    public void getTopCountriesInWorldWithNegativeNumber() throws SQLException {
+        setupEmptyResultSet();
+        MockCountryQueries.getTopCountriesInWorld(-1);
+        String result = outContent.toString();
+        assertTrue(result.contains("No countries can be displayed"), "Error message not found");
+    }
+    @Test
+    public void getTopCoutriesInWorldWithSQLException() throws SQLException {
+        when(MockCon.createStatement()).thenThrow(new  SQLException());
+        MockCountryQueries.getTopCountriesInWorld(5);
+        String result = outContent.toString();
+        assertTrue(result.contains("SQL Exception"), "Error message not found");
+    }
+
+    @Test
+    public void getTopCountriesInContinentWithValidParameters() throws SQLException {
+        setUpMockResultsWithData();
+        MockCountryQueries.getTopCountriesInContinent("Asia", 5);
+        String result = outContent.toString();
+        assertTrue(result.contains("China"), "Error message not found");
+        assertTrue(result.contains("India"), "Error message not found");
+    }
+    @Test
+    public void getTopCountriesInWorldWithNullContinent() throws SQLException {
+        setupEmptyResultSet();
+        MockCountryQueries.getTopCountriesInContinent(null,5);
+        String result = outContent.toString();
+        assertTrue(result.contains("No countries can be displayed"), "Error message not found");
+    }
+    @Test
+    public void getTopCountriesInRegionWithValidParameters() throws SQLException {
+        setUpMockResultsWithData();
+        MockCountryQueries.getTopCountriesInRegion("Caribbean", 5);
+        String result = outContent.toString();
+        assertTrue(result.contains("Top 5 Countries in the region Caribbean ranked from largest population to smallest: "), "Error message not found");
+    }
+    @Test
+    public void getTopCountriesInRegionWithNullRegion() throws SQLException {
+        setupEmptyResultSet();
+        MockCountryQueries.getTopCountriesInRegion(null,5);
+        String result = outContent.toString();
+        assertTrue(result.contains("No countries can be displayed"), "Error message not found");
+    }
+
 }
     /*@Test
     public void printEmptyResultSet() throws Exception{
