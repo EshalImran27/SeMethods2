@@ -3,13 +3,11 @@ package com.napier.sem2;
 //import all the sql libraries so as to read the sql data base and perform other functions
 import java.sql.*;
 
-import java.util.List;
-
 //The class App that contains our entire population information needed by organiser
 public class App
 {
     //Connection to MySQL database
-    private Connection con = null;
+    public Connection con = null;
     //Connect to the MySQL database.
     public void connect(){
         try{
@@ -59,29 +57,19 @@ public class App
             }
         }
     }
-    //method to the function to get the population in countries in the whole world
-    public void getCountriesByWorldPop(){
-        List<Country> countries = Country.getCountriesByPopulationInWorld(con);
-        System.out.println("All countries in the world by population (largest to smallest):");
-        Country.displayCountries(countries);
-    }
-    //method to the function to get the population in countries in a continent
-    public void getCountriesByContinentPop(){
-        List<Country> countries = Country.getCountriesByPopulationInContinent(con, "Europe");
-        System.out.println("All countries in a continent by population (largest to smallest):");
-        Country.displayCountries(countries);
-    }
-
     //Main method - entry point for the application
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
 
         App WorldReport = new App(); // Create new Application
         WorldReport.connect();// Connect to database
         System.out.println("Welcome to World Report!");
-        WorldReport.getCountriesByWorldPop();
-        WorldReport.getCountriesByContinentPop();
-       // a.getCountriesByPopulation();
-        // Disconnect from database
+        CountryQueries countries = new CountryQueries(WorldReport.con);
+        countries.getCountriesByPopulationInWorld();
+        countries.getCountriesByPopulationInContinent("Europe");
+        countries.getCountriesByPopulationInRegion("Caribbean");
+        countries.getTopCountriesInWorld(10);
+        countries.getTopCountriesInContinent("Africa",7);
+        countries.getTopCountriesInRegion("North America",6);
         WorldReport.disconnect();
     }
 }
