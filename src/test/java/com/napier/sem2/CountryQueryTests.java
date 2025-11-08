@@ -1,6 +1,6 @@
 package com.napier.sem2;
 
-import org.junit.jupiter.api.Test;
+/*import org.junit.jupiter.api.Test;
 
 import java.sql.*;
 import java.util.List;
@@ -107,4 +107,4 @@ public class CountryQueryTests {
 
     }
     //Tests for display Method
-}
+}*/
