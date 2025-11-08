@@ -18,7 +18,7 @@ public class Country {
     //adding constructors for the class
     public Country() {}
     public Country(String code, String name, String continent, String region,
-                    int capital, int population){
+                   int capital, int population){
         this.code = code;
         this.name = name;
         this.continent = continent;
@@ -72,7 +72,7 @@ public class Country {
             }
             country.display();
             count++;
-           // DisplayCount++;
+            // DisplayCount++;
             // Limit output if specified
     /*        if (limit > 0 && DisplayCount >= limit) {
                 System.out.println("... and " + (total - limit) + " more countries");

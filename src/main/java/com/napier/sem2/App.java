@@ -63,7 +63,7 @@ public class App
         App WorldReport = new App(); // Create new Application
         WorldReport.connect();// Connect to database
         System.out.println("Welcome to World Report!");
-        CountryQueries countries = new CountryQueries(WorldReport.con);
+        Query countries = new Query(WorldReport.con);
         countries.getCountriesByPopulationInWorld();
         countries.getCountriesByPopulationInContinent("Europe");
         countries.getCountriesByPopulationInRegion("Caribbean");

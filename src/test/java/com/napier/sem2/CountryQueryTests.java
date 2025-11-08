@@ -6,16 +6,14 @@ import static org.mockito.Mockito.*;//to add mock objects
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.sql.*;
-import java.util.List;
-import org.junit.jupiter.api.TestInstance;
-import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CountryQueryTests {
     private Connection MockCon;
     private Statement MockStatement;
     private ResultSet MockResultSet;
-    private CountryQueries MockCountryQueries;
+    private Query MockCountryQueries;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 
     @BeforeEach
@@ -26,7 +24,7 @@ public class CountryQueryTests {
         when(MockCon.createStatement()).thenReturn(MockStatement);
         when(MockStatement.executeQuery(anyString())).thenReturn(MockResultSet);
         System.setOut(new PrintStream(outContent));
-        MockCountryQueries = new CountryQueries(MockCon);
+        MockCountryQueries = new Query(MockCon);
     }
 
     @AfterEach
@@ -63,7 +61,7 @@ public class CountryQueryTests {
 
     @Test
     public void testNullDatabaseConnection() throws SQLException {
-        CountryQueries nullQueries = new CountryQueries(null);
+        Query nullQueries = new Query(null);
         nullQueries.getCountriesByPopulationInWorld();
         String result = outContent.toString();
         assertTrue(result.contains("Database Connection is null"),
