@@ -120,7 +120,7 @@ public class CapitalTests
     {
         List<City> list = new ArrayList<>();
         City madrid = new City("Madrid", "Spain",2879052);
-        City london = new City("London", "United Kindom", 7285000);
+        City london = new City("London", "United Kingdom", 7285000);
         list.add(madrid);
         list.add(london);
         City.displayListOfCapital(list);

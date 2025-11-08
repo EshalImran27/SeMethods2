@@ -92,7 +92,7 @@ public class Query {
         SqlQuery(sqlStatement);
     }
     //Capital Queries
-    public ArrayList<City> reportCapitalGlobal(Connection database)
+    /*public ArrayList<City> getReportCapitalGlobal()
     {
         ArrayList<City> report = new ArrayList<City>();
         //database connection check
@@ -121,6 +121,14 @@ public class Query {
             System.out.println("failed to get capitals details");
         }
         return report;
+    }*/
+    public void getReportCapitalGlobal() throws SQLException {
+        String sqlStatement =
+                "SELECT city.Name, country.Name, city.Population FROM city "
+                + "JOIN country ON city.CountryCode = country.Code "
+                + "ORDER BY city.Population DESC";
+        System.out.println("All capitals in the world ranked from largest population to smallest: ");
+        SqlQuery(sqlStatement);
     }
 
     public ArrayList<City> reportCapitalContinent(String continent)
