@@ -1,19 +1,78 @@
 package com.napier.sem2;
 
-/*import org.junit.jupiter.api.Test;
-
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import static org.mockito.Mockito.*;//to add mock objects
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.sql.*;
 import java.util.List;
-
+import org.junit.jupiter.api.TestInstance;
+import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
 
 public class CountryQueryTests {
+    private Connection MockCon;
+    private Statement MockStatement;
+    private ResultSet MockResultSet;
+    private CountryQueries MockCountryQueries;
+    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+
+    @BeforeEach
+    void setUp() throws SQLException {
+        MockCon = mock(Connection.class);
+        MockStatement = mock(Statement.class);
+        MockResultSet = mock(ResultSet.class);
+        when(MockCon.createStatement()).thenReturn(MockStatement);
+        when(MockStatement.executeQuery(anyString())).thenReturn(MockResultSet);
+        System.setOut(new PrintStream(outContent));
+        MockCountryQueries = new CountryQueries(MockCon);
+    }
+
+    @AfterEach
+    void tearDown() throws SQLException {
+        System.setOut(System.out);
+    }
+
+    private void setUpMockResultsWithData() throws SQLException {
+        when(MockResultSet.next()).thenReturn(true);
+        when(MockResultSet.next()).thenReturn(true);
+        when(MockResultSet.next()).thenReturn(false);
+        when(MockResultSet.getString("code"))
+                .thenReturn("CHN")
+                .thenReturn("IND");
+        when(MockResultSet.getString("name"))
+                .thenReturn("China")
+                .thenReturn("India");
+        when(MockResultSet.getString("continent"))
+                .thenReturn("Asia")
+                .thenReturn("Asia");
+        when(MockResultSet.getString("region"))
+                .thenReturn("Eastern Asia")
+                .thenReturn("South east Asia");
+        when(MockResultSet.getInt("capital"))
+                .thenReturn(1891)
+                .thenReturn(1109);
+
+        when(MockResultSet.getInt("population"))
+                .thenReturn(1277558000)
+                .thenReturn(1013662000);
+    }
+
+    private void setupEmptyResultSet() throws SQLException {
+        when(MockResultSet.next()).thenReturn(false);
+    }
+
     @Test
+    public void testNullDatabaseConnection() throws SQLException {
+        CountryQueries nullQueries = new CountryQueries(null);
+        nullQueries.getCountriesByPopulationInWorld();
+        String result = outContent.toString();
+        assertTrue(result.contains("Database Connection is null"),
+                "Should display null connection error");
+    }
+}
+    /*@Test
     public void printEmptyResultSet() throws Exception{
         Connection mockCon = mock(Connection.class);
         Statement mockStmt = mock(Statement.class);
