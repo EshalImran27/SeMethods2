@@ -1,6 +1,6 @@
 //include the package name
 package com.napier.sem2;
-//import all the sql libraries so as to read the sql data base and perform other functions
+//import all the sql libraries to read the sql database and perform other functions
 import java.sql.*;
 
 //The class App that contains our entire population information needed by organiser
@@ -32,9 +32,9 @@ public class App
                 break;
             }
             //if connection failed print which attempt is this
-            catch (SQLException sqle){
-                System.out.println("Failed to connect to database attempt " + Integer.toString(i));
-                System.out.println(sqle.getMessage());
+            catch (SQLException sql){
+                System.out.println("Failed to connect to database attempt " + i);
+                System.out.println(sql.getMessage());
             }
             //exception for interruption in the thread
             catch (InterruptedException ie){
@@ -70,6 +70,9 @@ public class App
         countries.getTopCountriesInWorld(10);
         countries.getTopCountriesInContinent("Africa",7);
         countries.getTopCountriesInRegion("North America",6);
+        //Capital
+        CapitalQueries capitals = new CapitalQueries(WorldReport.con);
+        capitals.getReportCapitalGlobal();
         WorldReport.disconnect();
     }
 }

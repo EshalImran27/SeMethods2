@@ -6,12 +6,10 @@ import static org.mockito.Mockito.*;//to add mock objects
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.sql.*;
-import java.util.List;
-import org.junit.jupiter.api.TestInstance;
-import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-public class CountryQueryTests {
+public class CountryQueriesTests {
     private Connection MockCon;
     private Statement MockStatement;
     private ResultSet MockResultSet;
@@ -143,7 +141,7 @@ public class CountryQueryTests {
         assertTrue(result.contains("No countries can be displayed"), "Error message not found");
     }
     @Test
-    public void getTopCoutriesInWorldWithSQLException() throws SQLException {
+    public void getTopCountriesInWorldWithSQLException() throws SQLException {
         when(MockCon.createStatement()).thenThrow(new  SQLException());
         MockCountryQueries.getTopCountriesInWorld(5);
         String result = outContent.toString();
