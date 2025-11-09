@@ -40,7 +40,7 @@ public class City {
     public void setPopulation(int population) {this.population = population;}
 
     //Display Method
-    public  void displayCapital(){
+    public void displayCapital(){
         System.out.println(
                 String.format(
                         "%-30s %-15s %10d",

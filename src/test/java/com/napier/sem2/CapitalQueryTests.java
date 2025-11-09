@@ -37,6 +37,12 @@ public class CapitalQueryTests {
         when(MockResultSet.getString("name"))
                 .thenReturn("Madrid")
                 .thenReturn("London");
+        when(MockResultSet.getString("continent"))
+                .thenReturn("Europe")
+                .thenReturn("Europe");
+        when(MockResultSet.getString("region"))
+                .thenReturn("Southern Europe")
+                .thenReturn("British Islands");
         when(MockResultSet.getString("country"))
                 .thenReturn("Spain")
                 .thenReturn("United Kingdom");
@@ -80,5 +86,101 @@ public class CapitalQueryTests {
         MockCountryQueries.getReportCapitalGlobal();
         String result = outContent.toString();
         assertTrue(result.contains("SQL Exception"), "Error message not found");
+    }
+
+    //getReportCapitalContinent
+    @Test
+    public void testGetReportCapitalContinent() throws SQLException {
+        setUpMockResultsWithData();
+        MockCountryQueries.getReportCapitalContinent("Europa");
+        String result = outContent.toString();
+        assertTrue(result.contains("Madrid"), "Error message not found");
+        assertTrue(result.contains("London"), "Error message not found");
+    }
+    @Test
+    public void testGetReportCapitalContinentWithSQLException() throws SQLException {
+        when(MockCon.createStatement()).thenThrow(new  SQLException());
+        MockCountryQueries.getReportCapitalContinent("Europe");
+        String result = outContent.toString();
+        assertTrue(result.contains("SQL Exception"), "Error message not found");
+    }
+
+    //getReportCapitalRegion
+    @Test
+    public void testGetReportCapitalRegion() throws SQLException {
+        setUpMockResultsWithData();
+        MockCountryQueries.getReportCapitalRegion("Southern Europe");
+        String result = outContent.toString();
+        assertTrue(result.contains("Madrid"), "Error message not found");
+    }
+    @Test
+    public void testGetReportCapitalRegionWithSQLException() throws SQLException {
+        when(MockCon.createStatement()).thenThrow(new  SQLException());
+        MockCountryQueries.getReportCapitalRegion("Southern Europe");
+        String result = outContent.toString();
+        assertTrue(result.contains("SQL Exception"), "Error message not found");
+    }
+
+    //getReportTopCapitalGlobal
+    @Test
+    public void testGetReportTopCapitalGlobalWithValidNumber() throws SQLException {
+        setUpMockResultsWithData();
+        MockCountryQueries.getReportTopCapitalGlobal(5);
+        String result = outContent.toString();
+        assertTrue(result.contains("Top 5 Capitals in the world ranked from largest population to smallest: "), "Error message not found");
+    }
+    @Test
+    public void testGetReportTopCapitalGlobalWithZero() throws SQLException {
+        setupEmptyResultSet();
+        MockCountryQueries.getReportTopCapitalGlobal(0);
+        String result = outContent.toString();
+        assertTrue(result.contains("No capitals can be displayed"), "Error message not found");
+    }
+    @Test
+    public void testGetReportTopCapitalGlobalWithNegativeNumber() throws SQLException {
+        setupEmptyResultSet();
+        MockCountryQueries.getReportTopCapitalGlobal(-1);
+        String result = outContent.toString();
+        assertTrue(result.contains("No capitals can be displayed"), "Error message not found");
+    }
+    @Test
+    public void testGetReportTopCapitalGlobalWithSQLException() throws SQLException {
+        when(MockCon.createStatement()).thenThrow(new  SQLException());
+        MockCountryQueries.getReportTopCapitalGlobal(5);
+        String result = outContent.toString();
+        assertTrue(result.contains("SQL Exception"), "Error message not found");
+    }
+
+    //getReportTopCapitalContinent
+    @Test
+    public void testGetReportTopCapitalContinentWithValidParameters() throws SQLException {
+        setUpMockResultsWithData();
+        MockCountryQueries.getReportTopCapitalContinent("Europe", 5);
+        String result = outContent.toString();
+        assertTrue(result.contains("Madrid"), "Error message not found");
+        assertTrue(result.contains("London"), "Error message not found");
+    }
+    @Test
+    public void testGetReportTopCapitalContinentWithNullContinent() throws SQLException {
+        setupEmptyResultSet();
+        MockCountryQueries.getReportTopCapitalContinent(null,5);
+        String result = outContent.toString();
+        assertTrue(result.contains("No capitals can be displayed"), "Error message not found");
+    }
+
+    //getReportTopCapitalRegion
+    @Test
+    public void testGetReportTopCapitalRegionWithValidParameters() throws SQLException {
+        setUpMockResultsWithData();
+        MockCountryQueries.getReportTopCapitalRegion("Southern Europe", 5);
+        String result = outContent.toString();
+        assertTrue(result.contains("Top 5 Capitals in the region Southern Europe ranked from largest population to smallest: "), "Error message not found");
+    }
+    @Test
+    public void testGetReportTopCapitalRegionWithNullRegion() throws SQLException {
+        setupEmptyResultSet();
+        MockCountryQueries.getReportTopCapitalRegion(null,5);
+        String result = outContent.toString();
+        assertTrue(result.contains("No capitals can be displayed"), "Error message not found");
     }
 }
