@@ -141,7 +141,7 @@ public class CountryQueryTests {
         assertTrue(result.contains("No countries can be displayed"), "Error message not found");
     }
     @Test
-    public void getTopCoutriesInWorldWithSQLException() throws SQLException {
+    public void getTopCountriesInWorldWithSQLException() throws SQLException {
         when(MockCon.createStatement()).thenThrow(new  SQLException());
         MockCountryQueries.getTopCountriesInWorld(5);
         String result = outContent.toString();

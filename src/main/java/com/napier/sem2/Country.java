@@ -1,9 +1,7 @@
 //including package in the class
 package com.napier.sem2;
 
-import java.util.ArrayList;
 import java.util.List;
-
 import java.sql.*;
 
 //adding attributes into the country class
@@ -60,18 +58,19 @@ public class Country {
         System.out.println(String.format("%-3s %-40s %-15s %-30s %10s %s",
                 "Code", "Name", "Continent", "Region", "Population", "Capital"));
         System.out.println("-----------------------------------------------------------------");
-        int count = 0;
-        //int DisplayCount = 0;
-        int total = countries.size();
+        /*int count = 0;
+        *int DisplayCount = 0;
+        *int total = countries.size();
+        */
 
         for (Country country : countries) {
             if (country == null) {
                 System.out.println("Warning: country is null");
-                count++;
+                //count++;
                 continue;
             }
             country.display();
-            count++;
+            //count++;
             // DisplayCount++;
             // Limit output if specified
     /*        if (limit > 0 && DisplayCount >= limit) {

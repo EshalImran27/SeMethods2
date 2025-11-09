@@ -2,12 +2,10 @@ package com.napier.sem2;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.*;
-import static org.mockito.Mockito.*;//to add mock objects
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.sql.*;
 import java.util.List;
-import org.junit.jupiter.api.TestInstance;
 import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 

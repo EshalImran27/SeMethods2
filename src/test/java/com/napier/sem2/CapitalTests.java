@@ -81,7 +81,7 @@ public class CapitalTests
     public void printDisplayWithNoPopulation(){
         City capital= new City();
         capital.setName("Madrid");
-        capital.setCountry("Sapin");
+        capital.setCountry("Spain");
         capital.setPopulation(0);
         capital.displayCapital();
         String result = output.toString();
@@ -90,7 +90,7 @@ public class CapitalTests
     //Tests for displayListOfCapital Method
     //1. NULL TEST
     @Test
-    public void testdisplayListOfCapitalWithNull()
+    public void testDisplayListOfCapitalWithNull()
     {
         City.displayListOfCapital(null);
         String result = output.toString();
@@ -98,7 +98,7 @@ public class CapitalTests
     }
     //2. EMPTY LIST
     @Test
-    public void testdisplayListOfCapitalWithEmptyList() {
+    public void testDisplayListOfCapitalWithEmptyList() {
         List<City> emptyList = new ArrayList<>();
         City.displayListOfCapital(emptyList);
         String result = output.toString();
@@ -116,7 +116,7 @@ public class CapitalTests
     }
     //4. NORMAL LIST
     @Test
-    public void testdisplayListOfCapitalWithNormalList()
+    public void testDisplayListOfCapitalWithNormalList()
     {
         List<City> list = new ArrayList<>();
         City madrid = new City("Madrid", "Spain",2879052);
