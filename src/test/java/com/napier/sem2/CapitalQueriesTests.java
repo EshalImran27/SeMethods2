@@ -9,11 +9,11 @@ import java.sql.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class CapitalQueryTests {
+public class CapitalQueriesTests {
     private Connection MockCon;
     private Statement MockStatement;
     private ResultSet MockResultSet;
-    private Query MockCountryQueries;
+    private CapitalQueries MockCountryQueries;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 
     @BeforeEach
@@ -24,7 +24,7 @@ public class CapitalQueryTests {
         when(MockCon.createStatement()).thenReturn(MockStatement);
         when(MockStatement.executeQuery(anyString())).thenReturn(MockResultSet);
         System.setOut(new PrintStream(outContent));
-        MockCountryQueries = new Query(MockCon);
+        MockCountryQueries = new CapitalQueries(MockCon);
     }
 
     @AfterEach
@@ -34,16 +34,10 @@ public class CapitalQueryTests {
 
     private void setUpMockResultsWithData() throws SQLException {
         when(MockResultSet.next()).thenReturn(true,true,false);
-        when(MockResultSet.getString("name"))
+        when(MockResultSet.getString("city_name"))
                 .thenReturn("Madrid")
                 .thenReturn("London");
-        when(MockResultSet.getString("continent"))
-                .thenReturn("Europe")
-                .thenReturn("Europe");
-        when(MockResultSet.getString("region"))
-                .thenReturn("Southern Europe")
-                .thenReturn("British Islands");
-        when(MockResultSet.getString("country"))
+        when(MockResultSet.getString("country_name"))
                 .thenReturn("Spain")
                 .thenReturn("United Kingdom");
         when(MockResultSet.getInt("population"))
@@ -58,7 +52,7 @@ public class CapitalQueryTests {
     //getReportCapitalGlobal
     @Test
     public void testNullDatabaseConnection() throws SQLException {
-        Query nullQueries = new Query(null);
+        CapitalQueries nullQueries = new CapitalQueries(null);
         nullQueries.getReportCapitalGlobal();
         String result = outContent.toString();
         assertTrue(result.contains("Database Connection is null"),
@@ -78,7 +72,7 @@ public class CapitalQueryTests {
         setupEmptyResultSet();
         MockCountryQueries.getReportCapitalGlobal();
         String result = outContent.toString();
-        assertTrue(result.contains("No countries can be displayed"), "Error message not found");
+        assertTrue(result.contains("No capitals can be displayed"), "Error message not found");
     }
     @Test
     public void testGetReportCapitalGlobalWithSQLException() throws SQLException {

@@ -9,11 +9,11 @@ import java.sql.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class CountryQueryTests {
+public class CountryQueriesTests {
     private Connection MockCon;
     private Statement MockStatement;
     private ResultSet MockResultSet;
-    private Query MockCountryQueries;
+    private CountryQueries MockCountryQueries;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 
     @BeforeEach
@@ -24,7 +24,7 @@ public class CountryQueryTests {
         when(MockCon.createStatement()).thenReturn(MockStatement);
         when(MockStatement.executeQuery(anyString())).thenReturn(MockResultSet);
         System.setOut(new PrintStream(outContent));
-        MockCountryQueries = new Query(MockCon);
+        MockCountryQueries = new CountryQueries(MockCon);
     }
 
     @AfterEach
@@ -61,7 +61,7 @@ public class CountryQueryTests {
 
     @Test
     public void testNullDatabaseConnection() throws SQLException {
-        Query nullQueries = new Query(null);
+        CountryQueries nullQueries = new CountryQueries(null);
         nullQueries.getCountriesByPopulationInWorld();
         String result = outContent.toString();
         assertTrue(result.contains("Database Connection is null"),

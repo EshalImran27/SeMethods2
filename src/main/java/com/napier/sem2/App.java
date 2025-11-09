@@ -63,13 +63,16 @@ public class App
         App WorldReport = new App(); // Create new Application
         WorldReport.connect();// Connect to database
         System.out.println("Welcome to World Report!");
-        Query countries = new Query(WorldReport.con);
+        CountryQueries countries = new CountryQueries(WorldReport.con);
         countries.getCountriesByPopulationInWorld();
         countries.getCountriesByPopulationInContinent("Europe");
         countries.getCountriesByPopulationInRegion("Caribbean");
         countries.getTopCountriesInWorld(10);
         countries.getTopCountriesInContinent("Africa",7);
         countries.getTopCountriesInRegion("North America",6);
+        //Capital
+        CapitalQueries capitals = new CapitalQueries(WorldReport.con);
+        capitals.getReportCapitalGlobal();
         WorldReport.disconnect();
     }
 }
