@@ -21,6 +21,14 @@ jobs:
       - name: Run Unit Tests
         run: mvn -B test
 
+      - name: Upload Test Reports (if failed)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: target/surefire-reports
+
+
   integration-tests:
     name: Integration Tests (Docker Compose)
     runs-on: ubuntu-22.04
@@ -46,10 +54,18 @@ jobs:
       - name: Wait for database to be ready
         run: |
           echo "Waiting for database to start..."
-          sleep 20
+          sleep 40
 
       - name: Run Integration Tests
         run: mvn -B test -Dtest=*IntegrationTests
+
+      - name: Upload Integration Test Reports (if failed)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-surefire-reports
+          path: target/surefire-reports
+
 
       - name: Stop Docker Compose
         if: always()

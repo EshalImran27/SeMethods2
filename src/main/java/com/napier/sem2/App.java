@@ -21,7 +21,7 @@ public class App
             System.exit(-1);
         }
         // total 10 connection attempts are allowed
-        int retries = 10;
+        int retries = 3;
         for (int i = 0; i < retries; ++i) {
             System.out.println("Connecting to database...");
             try{
@@ -66,7 +66,7 @@ public class App
         if(args.length < 1){
             WorldReport.connect("localhost:33060", 0);
         }else{
-            WorldReport.connect("db:3306",30000);
+            WorldReport.connect("db:3306",10000);
         }
         System.out.println("Welcome to World Report!");
         CountryQueries countries = new CountryQueries(WorldReport.con);
