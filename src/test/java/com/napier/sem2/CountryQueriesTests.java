@@ -59,7 +59,7 @@ public class CountryQueriesTests {
     }
 
     @Test
-    public void testNullDatabaseConnection(){
+    public void testNullDatabaseConnection() throws SQLException {
         CountryQueries nullQueries = new CountryQueries(null);
         nullQueries.getCountriesByPopulationInWorld();
         String result = outContent.toString();

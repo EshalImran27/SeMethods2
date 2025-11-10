@@ -50,7 +50,7 @@ public class CapitalQueriesTests {
 
     //getReportCapitalGlobal
     @Test
-    public void testNullDatabaseConnection(){
+    public void testNullDatabaseConnection() throws SQLException {
         CapitalQueries nullQueries = new CapitalQueries(null);
         nullQueries.getReportCapitalGlobal();
         String result = outContent.toString();
