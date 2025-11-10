@@ -70,13 +70,13 @@ public class App
             WorldReport.connect(args[0], Integer.parseInt(args[1]));
         }
         System.out.println("Welcome to World Report!");
-        /*CountryQueries countries = new CountryQueries(WorldReport.con);
+        CountryQueries countries = new CountryQueries(WorldReport.con);
         countries.getCountriesByPopulationInWorld();
         countries.getCountriesByPopulationInContinent("Europe");
         countries.getCountriesByPopulationInRegion("Caribbean");
         countries.getTopCountriesInWorld(10);
         countries.getTopCountriesInContinent("Africa",7);
-        countries.getTopCountriesInRegion("North America",6);*/
+        countries.getTopCountriesInRegion("North America",6);
 
         //Capital
         CapitalQueries queryCapital = new CapitalQueries(WorldReport.con);
