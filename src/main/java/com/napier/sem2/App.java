@@ -64,9 +64,9 @@ public class App
         App WorldReport = new App(); // Create new Application
         // Connect to database
         if(args.length < 1){
-            WorldReport.connect("localhost:33060", 30000);
+            WorldReport.connect("localhost:33060", 0);
         }else{
-            WorldReport.connect(args[0], Integer.parseInt(args[1]));
+            WorldReport.connect("db:3306",30000);
         }
         System.out.println("Welcome to World Report!");
         CountryQueries countries = new CountryQueries(WorldReport.con);
