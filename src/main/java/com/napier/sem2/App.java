@@ -2,6 +2,8 @@
 package com.napier.sem2;
 //import all the sql libraries to read the sql database and perform other functions
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 //The class App that contains our entire population information needed by organiser
 public class App
@@ -9,7 +11,7 @@ public class App
     //Connection to MySQL database
     public Connection con = null;
     //Connect to the MySQL database.
-    public void connect(){
+    public void connect(String location, int delay){
         try{
             // Load Database driver
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -25,9 +27,9 @@ public class App
             System.out.println("Connecting to database...");
             try{
                 // Wait a bit for db to start because mysql container takes time to initialize
-                Thread.sleep(30000);
+                Thread.sleep(delay);
                 // Connect to WORLD database
-                con = DriverManager.getConnection("jdbc:mysql://db:3306/world?allowPublicKeyRetrieval=true&useSSL=false", "root", "example");
+                con = DriverManager.getConnection("jdbc:mysql://"+ location + "/world?allowPublicKeyRetrieval=true&useSSL=false", "root", "example");
                 System.out.println("Successfully connected to World database!");
                 break;
             }
@@ -61,23 +63,34 @@ public class App
     public static void main(String[] args) throws SQLException {
 
         App WorldReport = new App(); // Create new Application
-        WorldReport.connect();// Connect to database
+        // Connect to database
+        if(args.length < 1){
+            WorldReport.connect("localhost:33060", 30000);
+        }else{
+            WorldReport.connect(args[0], Integer.parseInt(args[1]));
+        }
         System.out.println("Welcome to World Report!");
-        CountryQueries countries = new CountryQueries(WorldReport.con);
-        //countries.getCountriesByPopulationInWorld();
+        /*CountryQueries countries = new CountryQueries(WorldReport.con);
+        countries.getCountriesByPopulationInWorld();
         countries.getCountriesByPopulationInContinent("Europe");
-        //countries.getCountriesByPopulationInRegion("Caribbean");
-        //countries.getTopCountriesInWorld(10);
+        countries.getCountriesByPopulationInRegion("Caribbean");
+        countries.getTopCountriesInWorld(10);
         countries.getTopCountriesInContinent("Africa",7);
-        //countries.getTopCountriesInRegion("North America",6);
+        countries.getTopCountriesInRegion("North America",6);*/
+
         //Capital
-        CapitalQueries capitals = new CapitalQueries(WorldReport.con);
-        capitals.getReportCapitalGlobal();
-        capitals.getReportCapitalContinent("Asia");
-        capitals.getReportCapitalRegion("Caribbean");
-        capitals.getReportTopCapitalContinent("Asia",5);
-        capitals.getReportTopCapitalRegion("Caribbean",5);
-        capitals.getReportTopCapitalGlobal(5);
+        CapitalQueries queryCapital = new CapitalQueries(WorldReport.con);
+        List <City> report;
+        report = queryCapital.getReportCapitalGlobalList(); //Report
+        System.out.println("All capitals in the world ranked from largest population to smallest: ");
+        City.displayListOfCapital(report); //Print report
+        //Report + Print
+        queryCapital.getReportCapitalGlobal();
+        queryCapital.getReportCapitalContinent("Asia");
+        queryCapital.getReportCapitalRegion("Caribbean");
+        queryCapital.getReportTopCapitalContinent("Asia",5);
+        queryCapital.getReportTopCapitalRegion("Caribbean",5);
+        queryCapital.getReportTopCapitalGlobal(5);
         WorldReport.disconnect();
     }
 }
