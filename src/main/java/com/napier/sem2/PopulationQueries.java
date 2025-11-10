@@ -31,10 +31,86 @@ public class PopulationQueries {
             return 0;
         }
     }
-    public long getWorldPopulation(String continent) {
+    public long getContinentPopulation(String continent) throws Exception{
         try {
             Statement stmt = con.createStatement();
-            String strSelect = "SELECT SUM(Population) AS TotalPopulation FROM country"+"WHERE continent = '" + continent + "'";
+            String strSelect = "SELECT SUM(Population) AS TotalPopulation FROM country  "+"WHERE continent = '" + continent + "' ";
+            ResultSet rset = stmt.executeQuery(strSelect);
+
+            if (rset.next()) {
+                long totalPop = rset.getLong("TotalPopulation");
+                System.out.println("\n=== CONTINENT POPULATION ===");
+                System.out.println("Total Population: " + String.format("%,d", totalPop) + "Continent: " + continent);
+                return totalPop;
+            }
+            return 0;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get continent population");
+            return 0;
+        }
+    }
+    public long getRegionPopulation(String region) {
+        try {
+            Statement stmt = con.createStatement();
+            String strSelect = "SELECT SUM(Population) AS TotalPopulation FROM country "+"WHERE region = '" + region + "' ";
+            ResultSet rset = stmt.executeQuery(strSelect);
+
+            if (rset.next()) {
+                long totalPop = rset.getLong("TotalPopulation");
+                System.out.println("\n=== WORLD POPULATION ===");
+                System.out.println("Total Population: " + String.format("%,d", totalPop));
+                return totalPop;
+            }
+            return 0;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get world population");
+            return 0;
+        }
+    }
+    public long getCountryPopulation(String country) {
+        try {
+            Statement stmt = con.createStatement();
+            String strSelect = "SELECT SUM(Population) AS TotalPopulation FROM country "+"WHERE region = '" + country + "' ";
+            ResultSet rset = stmt.executeQuery(strSelect);
+
+            if (rset.next()) {
+                long totalPop = rset.getLong("TotalPopulation");
+                System.out.println("\n=== WORLD POPULATION ===");
+                System.out.println("Total Population: " + String.format("%,d", totalPop));
+                return totalPop;
+            }
+            return 0;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get world population");
+            return 0;
+        }
+    }
+    public long getDistrictPopulation(String district) {
+        try {
+            Statement stmt = con.createStatement();
+            String strSelect = "SELECT SUM(Population) AS TotalPopulation FROM country "+"WHERE region = '" + district + "' ";
+            ResultSet rset = stmt.executeQuery(strSelect);
+
+            if (rset.next()) {
+                long totalPop = rset.getLong("TotalPopulation");
+                System.out.println("\n=== WORLD POPULATION ===");
+                System.out.println("Total Population: " + String.format("%,d", totalPop));
+                return totalPop;
+            }
+            return 0;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get world population");
+            return 0;
+        }
+    }
+    public long getCityPopulation(String city) {
+        try {
+            Statement stmt = con.createStatement();
+            String strSelect = "SELECT SUM(Population) AS TotalPopulation FROM country "+"WHERE region = '" + city + "' ";
             ResultSet rset = stmt.executeQuery(strSelect);
 
             if (rset.next()) {
