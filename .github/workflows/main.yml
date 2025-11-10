@@ -24,16 +24,22 @@ jobs:
       - name: Run application with World database
         run: docker compose up --abort-on-container-exit
 
-      - name: Unit Tests
+      - name: Unit Tests Country
+        run: mvn -Dtest=com.napier.sem2.CountryTests test
+
+      - name: Unit Tests CountryQuery
+        run: mvn -Dtest=com.napier.sem2.CountryQueryTests test
+
+      - name: Unit Tests Capital
+        run: mvn -Dtest=com.napier.sem2.CapitalTests test
+
+      - name: Unit Tests CapitalQuery
+        run: mvn -Dtest=com.napier.sem2.CapitalQueryTests test
+
+      - name: Package and Run docker compose
         run: |
-          mvn -Dtest=com.napier.sem2.CountryTests test
-    mvn -Dtest=com.napier.sem2.CapitalQueriesTests test
-    mvn -Dtest=com.napier.sem2.CapitalTests test
-    mvn -Dtest=com.napier.sem2.CountryQueriesTests test
-    - name: Package and Run docker compose
-      run: |
-        mvn package -DskipTests
-        docker compose up --abort-on-container-exit
+          mvn package -DskipTests
+          docker compose up --abort-on-container-exit
 
   IntegrationTests:
     name: Integration Tests
