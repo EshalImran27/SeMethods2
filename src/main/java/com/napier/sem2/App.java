@@ -80,17 +80,31 @@ public class App
         //Capital
         CapitalQueries queryCapital = new CapitalQueries(WorldReport.con);
         List <City> report;
-        report = queryCapital.getReportCapitalGlobalList(); //Report
+        report = queryCapital.getReportCapitalGlobalList(); //Object
         System.out.println("All capitals in the world ranked from largest population to smallest: ");
-        City.displayListOfCapital(report); //Print report
-        queryCapital.outputCapitalReport(report, "Capital Global Report");
-        //Report + Print
+        City.displayListOfCapital(report); //Print Object
+
+        //Print
         queryCapital.getReportCapitalGlobal();
         queryCapital.getReportCapitalContinent("Asia");
         queryCapital.getReportCapitalRegion("Caribbean");
         queryCapital.getReportTopCapitalContinent("Asia",5);
         queryCapital.getReportTopCapitalRegion("Caribbean",5);
         queryCapital.getReportTopCapitalGlobal(5);
+
+        //Report
+        queryCapital.outputCapitalReport(report, "Capital Global Report");
+        report = queryCapital.getReportCapitalContinentList("Asia");
+        queryCapital.outputCapitalReport(report, "Capital Continent Report");
+        report = queryCapital.getReportCapitalRegionList("Caribbean");
+        queryCapital.outputCapitalReport(report, "Capital Region Report");
+        report = queryCapital.getReportTopCapitalContinentList("Asia", 5);
+        queryCapital.outputCapitalReport(report, "Capital Top Continent Report");
+        report = queryCapital.getReportTopCapitalRegionList("Caribbean", 5);
+        queryCapital.outputCapitalReport(report, "Capital Top Region Report");
+        report = queryCapital.getReportTopCapitalGlobalList(5);
+        queryCapital.outputCapitalReport(report, "Capital Top Report");
+
         WorldReport.disconnect();
     }
 }
