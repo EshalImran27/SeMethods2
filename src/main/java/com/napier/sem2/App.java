@@ -65,19 +65,22 @@ public class App
         System.out.println("Welcome to World Report!");
         CountryQueries countries = new CountryQueries(WorldReport.con);
         //countries.getCountriesByPopulationInWorld();
-        countries.getCountriesByPopulationInContinent("Europe");
+        //countries.getCountriesByPopulationInContinent("Europe");
         //countries.getCountriesByPopulationInRegion("Caribbean");
         //countries.getTopCountriesInWorld(10);
         countries.getTopCountriesInContinent("Africa",7);
         //countries.getTopCountriesInRegion("North America",6);
         //Capital
         CapitalQueries capitals = new CapitalQueries(WorldReport.con);
-        capitals.getReportCapitalGlobal();
-        capitals.getReportCapitalContinent("Asia");
-        capitals.getReportCapitalRegion("Caribbean");
+        //capitals.getReportCapitalGlobal();
+        //capitals.getReportCapitalContinent("Asia");
+        //capitals.getReportCapitalRegion("Caribbean");
         capitals.getReportTopCapitalContinent("Asia",5);
-        capitals.getReportTopCapitalRegion("Caribbean",5);
-        capitals.getReportTopCapitalGlobal(5);
+        //capitals.getReportTopCapitalRegion("Caribbean",5);
+        //capitals.getReportTopCapitalGlobal(5);
+        //population details
+        PopulationQueries population = new PopulationQueries(WorldReport.con);
+        population.getWorldPopulation();
         WorldReport.disconnect();
     }
 }
