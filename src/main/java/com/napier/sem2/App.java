@@ -20,7 +20,7 @@ public class App
             System.out.println("Could not load SQL driver");
             System.exit(-1);
         }
-        // total 10 connection attempts are allowed
+        // total 3 connection attempts are allowed
         int retries = 3;
         for (int i = 0; i < retries; ++i) {
             System.out.println("Connecting to database...");
