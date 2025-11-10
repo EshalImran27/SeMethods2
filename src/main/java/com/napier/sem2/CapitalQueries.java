@@ -19,6 +19,7 @@ public class CapitalQueries {
             City capital = new City(
                     rset.getString("city_name"),
                     rset.getString("country_name"),
+                    rset.getString("district_name"),
                     rset.getInt("population"));
             listOfCapitals.add(capital);
         }
@@ -45,7 +46,7 @@ public class CapitalQueries {
     //Capital Reports
     public void getReportCapitalGlobal() throws SQLException {
         String sqlStatement =
-                "SELECT city.Name AS city_name, country.Name AS country_name, city.Population AS population " +
+                "SELECT city.Name AS city_name, country.Name AS country_name,city.District AS district_name, city.Population AS population " +
                         "FROM city " +
                         "JOIN country ON city.ID = country.Capital " +
                         "ORDER BY city.Population DESC";
@@ -53,7 +54,8 @@ public class CapitalQueries {
         SqlQueryCapitals(sqlStatement);
     }
     public void getReportCapitalContinent(String continent) throws SQLException {
-        String sqlStatement = "SELECT city.Name, country.Name, city.Population FROM city "
+        String sqlStatement = "SELECT city.Name AS city_name, country.Name AS country_name,city.District AS district_name, city.Population AS population " +
+                "FROM city "
                 + "JOIN country ON city.ID = country.Capital "
                 + "WHERE country.Continent = '" + continent + "' "
                 + "ORDER BY city.Population DESC";
@@ -61,7 +63,8 @@ public class CapitalQueries {
         SqlQueryCapitals(sqlStatement);
     }
     public void getReportCapitalRegion(String region) throws SQLException {
-        String sqlStatement = "SELECT city.Name, country.Name, city.Population FROM city "
+        String sqlStatement = "SELECT city.Name AS city_name, country.Name AS country_name,city.District AS district_name, city.Population AS population " +
+                "FROM city "
                 + "JOIN country ON city.ID = country.Capital "
                 + "WHERE country.Region = '" + region + "' "
                 + "ORDER BY city.Population DESC";
@@ -73,9 +76,10 @@ public class CapitalQueries {
             System.out.println("No capitals can be displayed");
             return;
         }
-        String sqlStatement =  "SELECT city.Name, country.Name, city.Population FROM city "
+        String sqlStatement =  "SELECT city.Name AS city_name, country.Name AS country_name,city.District AS district_name, city.Population AS population " +
+                "FROM city "
                 + "JOIN country ON city.ID = country.Capital "
-                + "ORDER BY city.Population DESC"
+                + "ORDER BY city.Population DESC "
                 + "LIMIT " + n;
         System.out.println("Top " + n + " Capitals in the world ranked from largest population to smallest: ");
         SqlQueryCapitals(sqlStatement);
@@ -85,10 +89,11 @@ public class CapitalQueries {
             System.out.println("No capitals can be displayed");
             return;
         }
-        String sqlStatement =  "SELECT city.Name, country.Name, city.Population FROM city "
+        String sqlStatement = "SELECT city.Name AS city_name, country.Name AS country_name,city.District AS district_name, city.Population AS population " +
+                "FROM city "
                 + "JOIN country ON city.ID = country.Capital "
                 + "WHERE country.Continent = '" + continent + "' "
-                + "ORDER BY city.Population DESC"
+                + "ORDER BY city.Population DESC "
                 + "LIMIT " + n;
         System.out.println("Top " + n + " Capitals in the continent " + continent + " ranked from largest population to smallest: ");
         SqlQueryCapitals(sqlStatement);
@@ -98,10 +103,11 @@ public class CapitalQueries {
             System.out.println("No capitals can be displayed");
             return;
         }
-        String sqlStatement = "SELECT city.Name, country.Name, city.Population FROM city "
+        String sqlStatement = "SELECT city.Name AS city_name, country.Name AS country_name,city.District AS district_name, city.Population AS population " +
+                "FROM city "
                 + "JOIN country ON city.ID = country.Capital "
                 + "WHERE country.Region = '" + region + "' "
-                + "ORDER BY city.Population DESC"
+                + "ORDER BY city.Population DESC "
                 + "LIMIT " + n;
         System.out.println("Top " + n + " Capitals in the region " + region + " ranked from largest population to smallest: ");
         SqlQueryCapitals(sqlStatement);

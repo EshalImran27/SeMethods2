@@ -73,6 +73,11 @@ public class App
         //Capital
         CapitalQueries capitals = new CapitalQueries(WorldReport.con);
         capitals.getReportCapitalGlobal();
+        capitals.getReportCapitalContinent("Asia");
+        capitals.getReportCapitalRegion("Caribbean");
+        capitals.getReportTopCapitalContinent("Asia",5);
+        capitals.getReportTopCapitalRegion("Caribbean",5);
+        capitals.getReportTopCapitalGlobal(5);
         WorldReport.disconnect();
     }
 }

@@ -76,6 +76,17 @@ public class CapitalTests
         String result = output.toString();
         assertTrue(result.contains("N/A"),  ("Error message not found"));
     }
+    @Test
+    public void printDisplayWithNullDistrict(){
+        City capital= new City();
+        capital.setName("Madrid");
+        capital.setCountry("Spain");
+        capital.setDistrict(null);
+        capital.setPopulation(22903129);
+        capital.displayCapital();
+        String result = output.toString();
+        assertTrue(result.contains("N/A"),  ("Error message not found"));
+    }
     //5. ZERO POPULATION
     @Test
     public void printDisplayWithNoPopulation(){
