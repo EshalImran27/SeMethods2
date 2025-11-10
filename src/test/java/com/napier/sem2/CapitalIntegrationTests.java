@@ -16,8 +16,7 @@ public class CapitalIntegrationTests
     static void init()
     {
         app = new App();
-        String dbHost = System.getenv().getOrDefault("DB_HOST", "localhost:33060");
-        app.connect(dbHost, 5000);
+        app.connect("localhost:33060", 5000);
         capitalQueries = new CapitalQueries(app.con);
     }
 

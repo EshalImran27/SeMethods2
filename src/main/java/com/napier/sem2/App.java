@@ -66,7 +66,7 @@ public class App
         if(args.length < 1){
             WorldReport.connect("localhost:33060", 0);
         }else{
-            WorldReport.connect("db:3306",10000);
+            WorldReport.connect(args[0], Integer.parseInt(args[1]));
         }
         System.out.println("Welcome to World Report!");
         CountryQueries countries = new CountryQueries(WorldReport.con);
@@ -83,6 +83,7 @@ public class App
         report = queryCapital.getReportCapitalGlobalList(); //Report
         System.out.println("All capitals in the world ranked from largest population to smallest: ");
         City.displayListOfCapital(report); //Print report
+        queryCapital.outputCapitalReport(report, "Capital Global Report");
         //Report + Print
         queryCapital.getReportCapitalGlobal();
         queryCapital.getReportCapitalContinent("Asia");

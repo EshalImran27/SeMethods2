@@ -1,5 +1,9 @@
 package com.napier.sem2;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -189,5 +193,35 @@ public class CapitalQueries {
         }
 
         return capitals;
+    }
+
+    /**
+     * Outputs to Markdown
+     *
+     * @param capitals
+     */
+    public void outputCapitalReport(List<City> capitals, String filename) {
+        // Check capitals is not null
+        if (capitals == null) {
+            System.out.println("No capitals");
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        // Print header
+        sb.append("| Name | Country | Population |\r\n");
+        // Loop over all capitals in the list
+        for (City capital : capitals) {
+            if (capital == null) continue;
+            sb.append("| " + capital.getName() + " | " + capital.getCountry() + " | "  + capital.getPopulation() + " |\r\n");
+        }
+        try {
+            new File("./reports/").mkdir();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(new File("./reports/" + filename + ".md")));
+            writer.write(sb.toString());
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
