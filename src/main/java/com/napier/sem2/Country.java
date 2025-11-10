@@ -39,14 +39,13 @@ public class Country {
 
     //public method to display each country detail separately
     public void display(){
-        System.out.println(
-                String.format("%-3s %-40s %-15s %-30s %10d %s",
-                        this.code != null ? this.code : "N/A",
-                        this.name != null ? this.name : "N/A",
-                        this.continent != null ? this.continent : "N/A",
-                        this.region != null ? this.region : "N/A",
-                        this.population,
-                        this.capital));
+        System.out.printf("%-3s %-40s %-15s %-30s %10d %s%n",
+                this.code != null ? this.code : "N/A",
+                this.name != null ? this.name : "N/A",
+                this.continent != null ? this.continent : "N/A",
+                this.region != null ? this.region : "N/A",
+                this.population,
+                this.capital);
     }
     //public method to display the entire list of country population
     public static void displayCountries(List<Country> countries) {
@@ -55,8 +54,8 @@ public class Country {
             return;
         }
         System.out.println("=================================================================");
-        System.out.println(String.format("%-3s %-40s %-15s %-30s %10s %s",
-                "Code", "Name", "Continent", "Region", "Population", "Capital"));
+        System.out.printf("%-3s %-40s %-15s %-30s %10s %s%n",
+                "Code", "Name", "Continent", "Region", "Population", "Capital");
         System.out.println("-----------------------------------------------------------------");
         /*int count = 0;
         *int DisplayCount = 0;

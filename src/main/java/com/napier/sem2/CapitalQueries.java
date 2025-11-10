@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CapitalQueries {
-    private Connection con;
+    private final Connection con;
     public CapitalQueries(Connection con) {
         this.con = con;
     }
@@ -21,27 +21,28 @@ public class CapitalQueries {
         }
         return listOfCapitals;
     }
-    private void SqlQuery(String sql) throws SQLException{
+    private void SqlQuery(String sql){
         List<City> listOfCapital = new ArrayList<>();
         if(con==null){
             System.out.println("Database Connection is null");
 
+        }else {
+            try{
+                Statement stmt = con.createStatement();
+                ResultSet rset = stmt.executeQuery(sql);
+                listOfCapital=CapitalsFromResultSet(rset);
+                rset.close();
+                stmt.close();
+            }
+            catch(Exception e){
+                System.out.println("SQL Exception: "+e.getMessage());
+            }
+            City.displayListOfCapital(listOfCapital);
         }
-        try{
-            Statement stmt = con.createStatement();
-            ResultSet rset = stmt.executeQuery(sql);
-            listOfCapital=CapitalsFromResultSet(rset);
-            rset.close();
-            stmt.close();
-        }
-        catch(Exception e){
-            System.out.println("SQL Exception: "+e.getMessage());
-        }
-        City.displayListOfCapital(listOfCapital);
     }
     //Capital Reports
     //Global
-    public void getReportCapitalGlobal() throws SQLException {
+    public void getReportCapitalGlobal() {
         String sqlStatement =
                 "SELECT city.Name AS city_name, country.Name AS country_name, city.Population AS population " +
                         "FROM city " +
@@ -50,35 +51,16 @@ public class CapitalQueries {
         System.out.println("All capitals in the world ranked from largest population to smallest: ");
         SqlQuery(sqlStatement);
     }
-    public List<City> getReportCapitalGlobalList() throws SQLException
-    {
-        List<City> capitals = new ArrayList<>();
-
+    public List<City> getReportCapitalGlobalList() {
         String query = "SELECT city.Name AS city_name, country.Name AS country_name, city.Population AS population " +
                 "FROM city " +
                 "JOIN country ON city.ID = country.Capital " +
                 "ORDER BY city.Population DESC ";
-
-        try (PreparedStatement stmt = con.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                String name = rs.getString("city_name");
-                String country = rs.getString("country_name");
-                int population = rs.getInt("population");
-
-                capitals.add(new City(name, country, population));
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return capitals;
+        return getCapitals(query);
     }
 
     //By Continent
-    public void getReportCapitalContinent(String continent) throws SQLException {
+    public void getReportCapitalContinent(String continent) {
         String sqlStatement = "SELECT city.Name AS city_name, country.Name AS country_name, city.Population AS population " +
                 "FROM city "
                 + "JOIN country ON city.ID = country.Capital "
@@ -87,36 +69,17 @@ public class CapitalQueries {
         System.out.println("All Capitals in " + continent + " ranked from largest population to smallest: ");
         SqlQuery(sqlStatement);
     }
-    public List<City> getReportCapitalContinentList(String continent) throws SQLException
-    {
-        List<City> capitals = new ArrayList<>();
-
+    public List<City> getReportCapitalContinentList(String continent) {
         String query = "SELECT city.Name AS city_name, country.Name AS country_name, city.Population AS population " +
                 "FROM city "
                 + "JOIN country ON city.ID = country.Capital "
                 + "WHERE country.Continent = '" + continent + "' "
                 + "ORDER BY city.Population DESC ";
-
-        try (PreparedStatement stmt = con.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                String name = rs.getString("city_name");
-                String country = rs.getString("country_name");
-                int population = rs.getInt("population");
-
-                capitals.add(new City(name, country, population));
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return capitals;
+        return getCapitals(query);
     }
 
     //By Region
-    public void getReportCapitalRegion(String region) throws SQLException {
+    public void getReportCapitalRegion(String region) {
         String sqlStatement = "SELECT city.Name AS city_name, country.Name AS country_name, city.Population AS population " +
                 "FROM city "
                 + "JOIN country ON city.ID = country.Capital "
@@ -125,36 +88,17 @@ public class CapitalQueries {
         System.out.println("All Capitals in the region: " + region + " ranked from largest population to smallest: ");
         SqlQuery(sqlStatement);
     }
-    public List<City> getReportCapitalRegionList(String region) throws SQLException
-    {
-        List<City> capitals = new ArrayList<>();
-
+    public List<City> getReportCapitalRegionList(String region) {
         String query = "SELECT city.Name AS city_name, country.Name AS country_name, city.Population AS population " +
                 "FROM city "
                 + "JOIN country ON city.ID = country.Capital "
                 + "WHERE country.Region = '" + region + "' "
                 + "ORDER BY city.Population DESC ";
-
-        try (PreparedStatement stmt = con.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                String name = rs.getString("city_name");
-                String country = rs.getString("country_name");
-                int population = rs.getInt("population");
-
-                capitals.add(new City(name, country, population));
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return capitals;
+        return getCapitals(query);
     }
 
     //Top Global
-    public void getReportTopCapitalGlobal(int n) throws SQLException {
+    public void getReportTopCapitalGlobal(int n) {
         if (n <= 0) {
             System.out.println("No capitals can be displayed");
             return;
@@ -167,36 +111,17 @@ public class CapitalQueries {
         System.out.println("Top " + n + " Capitals in the world ranked from largest population to smallest: ");
         SqlQuery(sqlStatement);
     }
-    public List<City> getReportTopCapitalGlobalList(int n) throws SQLException
-    {
-        List<City> capitals = new ArrayList<>();
-
+    public List<City> getReportTopCapitalGlobalList(int n) {
         String query = "SELECT city.Name AS city_name, country.Name AS country_name, city.Population AS population " +
                 "FROM city "
                 + "JOIN country ON city.ID = country.Capital "
                 + "ORDER BY city.Population DESC "
                 + "LIMIT " + n + " ";
-
-        try (PreparedStatement stmt = con.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                String name = rs.getString("city_name");
-                String country = rs.getString("country_name");
-                int population = rs.getInt("population");
-
-                capitals.add(new City(name, country, population));
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return capitals;
+        return getCapitals(query);
     }
 
     //Top Continent
-    public void getReportTopCapitalContinent(String continent, int n) throws SQLException {
+    public void getReportTopCapitalContinent(String continent, int n) {
         if (n <= 0 || continent==null || continent.isEmpty()) {
             System.out.println("No capitals can be displayed");
             return;
@@ -210,37 +135,18 @@ public class CapitalQueries {
         System.out.println("Top " + n + " Capitals in the continent " + continent + " ranked from largest population to smallest: ");
         SqlQuery(sqlStatement);
     }
-    public List<City> getReportTopCapitalContinentList(String continent, int n) throws SQLException
-    {
-        List<City> capitals = new ArrayList<>();
-
+    public List<City> getReportTopCapitalContinentList(String continent, int n) {
         String query = "SELECT city.Name AS city_name, country.Name AS country_name, city.Population AS population " +
                 "FROM city "
                 + "JOIN country ON city.ID = country.Capital "
                 + "WHERE country.Continent = '" + continent + "' "
                 + "ORDER BY city.Population DESC "
                 + "LIMIT " + n + " ";
-
-        try (PreparedStatement stmt = con.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                String name = rs.getString("city_name");
-                String country = rs.getString("country_name");
-                int population = rs.getInt("population");
-
-                capitals.add(new City(name, country, population));
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return capitals;
+        return getCapitals(query);
     }
 
     //Top Region
-    public void getReportTopCapitalRegion(String region, int n) throws SQLException {
+    public void getReportTopCapitalRegion(String region, int n) {
         if (n <= 0 || region==null) {
             System.out.println("No capitals can be displayed");
             return;
@@ -254,19 +160,21 @@ public class CapitalQueries {
         System.out.println("Top " + n + " Capitals in the region " + region + " ranked from largest population to smallest: ");
         SqlQuery(sqlStatement);
     }
-    public List<City> getReportTopCapitalRegionList(String region, int n) throws SQLException
-    {
-        List<City> capitals = new ArrayList<>();
-
+    public List<City> getReportTopCapitalRegionList(String region, int n) {
         String query = "SELECT city.Name AS city_name, country.Name AS country_name, city.Population AS population " +
                 "FROM city "
                 + "JOIN country ON city.ID = country.Capital "
                 + "WHERE country.Region = '" + region + "' "
                 + "ORDER BY city.Population DESC "
                 + "LIMIT " + n + " ";
+        return getCapitals(query);
+    }
 
+    private List<City> getCapitals(String query) {
+        List<City> capitals = new ArrayList<>();
         try (PreparedStatement stmt = con.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
+
 
             while (rs.next()) {
                 String name = rs.getString("city_name");

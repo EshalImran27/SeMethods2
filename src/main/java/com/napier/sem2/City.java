@@ -41,13 +41,11 @@ public class City {
 
     //Display Method
     public void displayCapital(){
-        System.out.println(
-                String.format(
-                        "%-30s %-35s %10d",
-                        this.name != null ? this.name : "N/A",
-                        this.country != null ? this.country : "N/A",
-                        this.population
-                )
+        System.out.printf(
+                "%-30s %-35s %10d%n",
+                this.name != null ? this.name : "N/A",
+                this.country != null ? this.country : "N/A",
+                this.population
         );
     }
 
@@ -59,8 +57,8 @@ public class City {
             return;
         }
         System.out.println("=================================================================");
-        System.out.println(String.format("%-30s %-35s %10s",
-                "Name", "Country", "Population"));
+        System.out.printf("%-30s %-35s %10s%n",
+                "Name", "Country", "Population");
         System.out.println("-----------------------------------------------------------------");
         for (City city : listOfCapital) {
             if (city == null) {
@@ -70,4 +68,5 @@ public class City {
             city.displayCapital();
         }
     }
+
 }

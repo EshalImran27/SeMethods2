@@ -2,7 +2,6 @@
 package com.napier.sem2;
 //import all the sql libraries to read the sql database and perform other functions
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 //The class App that contains our entire population information needed by organiser

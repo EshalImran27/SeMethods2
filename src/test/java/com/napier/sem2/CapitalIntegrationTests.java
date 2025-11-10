@@ -2,14 +2,8 @@ package com.napier.sem2;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
 
 public class CapitalIntegrationTests
 {
@@ -25,50 +19,50 @@ public class CapitalIntegrationTests
     }
 
     @Test
-    void testgetReportCapitalGlobalList() throws SQLException {
+    void testGetReportCapitalGlobalList(){
         List<City> capitals = capitalQueries.getReportCapitalGlobalList();
-        assertEquals(capitals.get(0).getName(), "Seoul");
-        assertEquals(capitals.get(0).getCountry(), "South Korea");
-        assertEquals(capitals.get(0).getPopulation(), 9981619);
+        assertEquals("Seoul", capitals.get(0).getName());
+        assertEquals("South Korea", capitals.get(0).getCountry());
+        assertEquals(9981619, capitals.get(0).getPopulation());
     }
 
     @Test
-    void getReportCapitalContinentList() throws SQLException {
+    void getReportCapitalContinentList(){
         List<City> capitals = capitalQueries.getReportCapitalContinentList("Asia");
-        assertEquals(capitals.get(2).getName(), "Tokyo");
-        assertEquals(capitals.get(2).getCountry(), "Japan");
-        assertEquals(capitals.get(2).getPopulation(), 7980230);
+        assertEquals("Tokyo", capitals.get(2).getName());
+        assertEquals("Japan", capitals.get(2).getCountry());
+        assertEquals(7980230, capitals.get(2).getPopulation());
     }
 
     @Test
-    void getReportCapitalRegion() throws SQLException {
+    void getReportCapitalRegion(){
         List<City> capitals = capitalQueries.getReportCapitalRegionList("Caribbean");
-        assertEquals(capitals.get(0).getName(), "La Habana");
-        assertEquals(capitals.get(0).getCountry(), "Cuba");
-        assertEquals(capitals.get(0).getPopulation(), 2256000);
+        assertEquals("La Habana", capitals.get(0).getName());
+        assertEquals("Cuba", capitals.get(0).getCountry());
+        assertEquals(2256000, capitals.get(0).getPopulation());
     }
 
     @Test
-    void getReportTopCapitalContinent() throws SQLException {
+    void getReportTopCapitalContinent(){
         List<City> capitals = capitalQueries.getReportTopCapitalContinentList("Asia",5);
-        assertEquals(capitals.get(4).getName(), "Teheran");
-        assertEquals(capitals.get(4).getCountry(), "Iran");
-        assertEquals(capitals.get(4).getPopulation(), 6758845);
+        assertEquals("Teheran", capitals.get(4).getName());
+        assertEquals("Iran", capitals.get(4).getCountry());
+        assertEquals(6758845, capitals.get(4).getPopulation());
     }
 
     @Test
-    void getReportTopCapitalRegion() throws SQLException {
+    void getReportTopCapitalRegion(){
         List<City> capitals = capitalQueries.getReportTopCapitalRegionList("Caribbean",5);
-        assertEquals(capitals.get(4).getName(), "Nassau");
-        assertEquals(capitals.get(4).getCountry(), "Bahamas");
-        assertEquals(capitals.get(4).getPopulation(), 172000);
+        assertEquals("Nassau", capitals.get(4).getName());
+        assertEquals("Bahamas", capitals.get(4).getCountry());
+        assertEquals(172000, capitals.get(4).getPopulation());
     }
 
     @Test
-    void getReportTopCapitalGlobal() throws SQLException {
+    void getReportTopCapitalGlobal(){
         List<City> capitals = capitalQueries.getReportTopCapitalGlobalList(5);
-        assertEquals(capitals.get(2).getName(), "Ciudad de México");
-        assertEquals(capitals.get(2).getCountry(), "Mexico");
-        assertEquals(capitals.get(2).getPopulation(), 8591309);
+        assertEquals("Ciudad de México", capitals.get(2).getName());
+        assertEquals("Mexico", capitals.get(2).getCountry());
+        assertEquals(8591309, capitals.get(2).getPopulation());
     }
 }

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CountryQueries {
-    private Connection con;
+    private final Connection con;
     public CountryQueries(Connection con) {
         this.con = con;
     }
@@ -23,32 +23,33 @@ public class CountryQueries {
         }
         return countries;
     }
-    private void SqlQuery(String sql) throws SQLException{
+    private void SqlQuery(String sql) {
         List<Country> countries = new ArrayList<>();
         if(con==null){
             System.out.println("Database Connection is null");
 
+        }else{
+            try{
+                Statement stmt = con.createStatement();
+                ResultSet rset = stmt.executeQuery(sql);
+                countries=CountriesFromResultSet(rset);
+                rset.close();
+                stmt.close();
+            }
+            catch(Exception e){
+                System.out.println("SQL Exception: "+e.getMessage());
+            }
+            Country.displayCountries(countries);
         }
-        try{
-            Statement stmt = con.createStatement();
-            ResultSet rset = stmt.executeQuery(sql);
-            countries=CountriesFromResultSet(rset);
-            rset.close();
-            stmt.close();
-        }
-        catch(Exception e){
-            System.out.println("SQL Exception: "+e.getMessage());
-        }
-        Country.displayCountries(countries);
     }
-    public void getCountriesByPopulationInWorld() throws SQLException {
+    public void getCountriesByPopulationInWorld() {
         String sqlStatement = "SELECT code, name, continent, region, capital, population " +
                 "FROM country " +
                 "ORDER BY population DESC";
         System.out.println("All Countries in the world ranked from largest population to smallest: ");
         SqlQuery(sqlStatement);
     }
-    public void getCountriesByPopulationInContinent(String continent) throws SQLException {
+    public void getCountriesByPopulationInContinent(String continent) {
         String sqlStatement = "SELECT code, name, continent, region, capital, population " +
                 "FROM country " +
                 "WHERE continent = '" + continent + "'" +
@@ -56,7 +57,7 @@ public class CountryQueries {
         System.out.println("All Countries in " + continent + " ranked from largest population to smallest: ");
         SqlQuery(sqlStatement);
     }
-    public void getCountriesByPopulationInRegion(String region) throws SQLException {
+    public void getCountriesByPopulationInRegion(String region) {
         String sqlStatement = "SELECT code, name, continent, region, capital, population " +
                 "FROM country " +
                 "WHERE region = '" + region + "'" +
@@ -65,7 +66,7 @@ public class CountryQueries {
         SqlQuery(sqlStatement);
 
     }
-    public void getTopCountriesInWorld(int n) throws SQLException {
+    public void getTopCountriesInWorld(int n) {
         String sqlStatement = "SELECT code, name, continent, region, capital, population " +
                 "FROM country " +
                 "ORDER BY population DESC " +
@@ -73,7 +74,7 @@ public class CountryQueries {
         System.out.println("Top " + n + " Countries in the world ranked from largest population to smallest: ");
         SqlQuery(sqlStatement);
     }
-    public void getTopCountriesInContinent(String continent, int n) throws SQLException {
+    public void getTopCountriesInContinent(String continent, int n) {
         String sqlStatement = "SELECT code, name, continent, region, capital, population " +
                 "FROM country " +
                 "WHERE continent = '" + continent + "' " +
@@ -82,7 +83,7 @@ public class CountryQueries {
         System.out.println("Top " + n + " Countries in the continent " + continent + " ranked from largest population to smallest: ");
         SqlQuery(sqlStatement);
     }
-    public void getTopCountriesInRegion(String region, int n) throws SQLException {
+    public void getTopCountriesInRegion(String region, int n) {
         String sqlStatement = "SELECT code, name, continent, region, capital, population " +
                 "FROM country " +
                 "WHERE region = '" + region + "' " +
