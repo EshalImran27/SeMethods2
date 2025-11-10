@@ -1,11 +1,6 @@
 name: CI Workflow for SEM2 Project
 
-on:
-  pull_request:
-    branches:
-      - main
-      - develop
-      - lab08
+on: push
 
 jobs:
   unit-tests:
