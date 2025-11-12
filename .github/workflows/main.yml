@@ -16,7 +16,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
       - name: Unit Tests
-        run: mvn -Dtests="com.napier.sem2.*Tests" -DexcludeTests="*IntegrationTests"
+        run: mvn clean test -Dtest="com.napier.sem2.*Tests" -DexcludeTests="*IntegrationTests"
   build:
     name: Build and Start Using docker-compose
     runs-on: ubuntu-22.04
