@@ -17,7 +17,7 @@ jobs:
           distribution: 'temurin'
       - name: Unit Tests
         run: mvn -Dtest=*Tests test
-    IntegrationTests:
+  IntegrationTests:
       name: Integration Tests
       runs-on: ubuntu-22.04
       steps:
