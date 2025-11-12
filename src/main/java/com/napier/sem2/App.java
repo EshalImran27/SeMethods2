@@ -71,11 +71,11 @@ public class App
         }
         System.out.println("Welcome to World Report!");
         CountryQueries countries = new CountryQueries(WorldReport.con);
-        countries.getCountriesByPopulationInWorld();
-        countries.getCountriesByPopulationInContinent("Europe");
-        countries.getCountriesByPopulationInRegion("Caribbean");
-        countries.getTopCountriesInWorld(10);
-        countries.getTopCountriesInContinent("Africa",7);
+        //countries.getCountriesByPopulationInWorld();
+        //countries.getCountriesByPopulationInContinent("Europe");
+        //countries.getCountriesByPopulationInRegion("Caribbean");
+        //countries.getTopCountriesInWorld(10);
+        //countries.getTopCountriesInContinent("Africa",7);
         countries.getTopCountriesInRegion("North America",6);
 
         //Capital
@@ -85,12 +85,12 @@ public class App
         System.out.println("All capitals in the world ranked from largest population to smallest: ");
         City.displayListOfCapital(report); //Print report
         //Report + Print
-        queryCapital.getReportCapitalGlobal();
-        queryCapital.getReportCapitalContinent("Asia");
-        queryCapital.getReportCapitalRegion("Caribbean");
-        queryCapital.getReportTopCapitalContinent("Asia",5);
-        queryCapital.getReportTopCapitalRegion("Caribbean",5);
-        queryCapital.getReportTopCapitalGlobal(5);
+        //queryCapital.getReportCapitalGlobal();
+        //queryCapital.getReportCapitalContinent("Asia");
+        //queryCapital.getReportCapitalRegion("Caribbean");
+        //queryCapital.getReportTopCapitalContinent("Asia",5);
+        //queryCapital.getReportTopCapitalRegion("Caribbean",5);
+        //queryCapital.getReportTopCapitalGlobal(5);
         WorldReport.disconnect();
     }
 }
