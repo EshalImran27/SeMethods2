@@ -1,5 +1,6 @@
 package com.napier.sem2;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -18,6 +19,11 @@ public class CapitalIntegrationTests
         app = new App();
         app.connect("localhost:33060", 5000);
         capitalQueries = new CapitalQueries(app.con);
+    }
+    @AfterAll
+    static void clean(){
+        if(app != null)
+            app.disconnect();
     }
 
     @Test
