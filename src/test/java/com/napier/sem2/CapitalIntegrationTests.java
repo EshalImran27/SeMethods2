@@ -2,6 +2,7 @@
 package com.napier.sem2;
 
 // Import SQL, JUnit and utility libraries
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import java.sql.SQLException;
@@ -39,6 +40,20 @@ public class CapitalIntegrationTests
         app = new App();
         app.connect("localhost:33060", 5000);
         capitalQueries = new CapitalQueries(app.con);
+    }
+
+    /**
+     * Cleans up resources after all integration tests have completed.
+     * <p>
+     * This method ensures that the database connection established by the
+     * {@link App} instance is properly closed to prevent resource leaks
+     * or lingering open connections after the test suite finishes.
+     * </p>
+     */
+    @AfterAll
+    static void clean(){
+        if(app != null)
+            app.disconnect();
     }
 
     /**
