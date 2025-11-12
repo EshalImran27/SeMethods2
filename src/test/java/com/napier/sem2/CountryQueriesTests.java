@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class CountryQueriesTests {
     private Connection MockCon;
-    private Statement MockStatement;
     private ResultSet MockResultSet;
     private CountryQueries MockCountryQueries;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -19,16 +18,16 @@ public class CountryQueriesTests {
     @BeforeEach
     void setUp() throws SQLException {
         MockCon = mock(Connection.class);
-        MockStatement = mock(Statement.class);
+        Statement mockStatement = mock(Statement.class);
         MockResultSet = mock(ResultSet.class);
-        when(MockCon.createStatement()).thenReturn(MockStatement);
-        when(MockStatement.executeQuery(anyString())).thenReturn(MockResultSet);
+        when(MockCon.createStatement()).thenReturn(mockStatement);
+        when(mockStatement.executeQuery(anyString())).thenReturn(MockResultSet);
         System.setOut(new PrintStream(outContent));
         MockCountryQueries = new CountryQueries(MockCon);
     }
 
     @AfterEach
-    void tearDown() throws SQLException {
+    void tearDown(){
         System.setOut(System.out);
     }
 
