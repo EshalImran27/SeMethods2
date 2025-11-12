@@ -32,3 +32,9 @@ buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
 .idea/
+/reports/Capital Global Report.md
+/reports/Capital Continent Report.md
+/reports/Capital Region Report.md
+/reports/Capital Top Continent Report.md
+/reports/Capital Top Region Report.md
+/reports/Capital Top Report.md
