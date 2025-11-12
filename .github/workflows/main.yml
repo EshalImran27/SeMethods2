@@ -16,7 +16,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
       - name: Unit Tests
-        run: mvn -Dtests=com.napier.sem2.App app
+        run: mvn -Dtests="com.napier.sem2.*Tests" -DexcludeTests="*IntegrationTests"
   build:
     name: Build and Start Using docker-compose
     runs-on: ubuntu-22.04
@@ -30,6 +30,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-      - run: |
+      - name: Package and run docker compose
+        run: |
           mvn package -DskipTests
           docker compose up --abort-on-container-exit
