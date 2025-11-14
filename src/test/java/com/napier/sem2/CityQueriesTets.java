@@ -8,7 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.sql.*;
 
-import static com.napier.sem2.CityIntegrationTets.cityQueries;
+import static com.napier.sem2.CityIntegrationTests.cityQueries;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 

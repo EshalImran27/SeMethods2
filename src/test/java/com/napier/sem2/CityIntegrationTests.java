@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * <p><b>Note:</b> These are integration tests — they require the database
  * to be running and properly seeded with expected data before execution.</p>
  */
-public class CityIntegrationTets {
+public class CityIntegrationTests {
     /** The main application instance used to establish a database connection. */
     static App app;
 
