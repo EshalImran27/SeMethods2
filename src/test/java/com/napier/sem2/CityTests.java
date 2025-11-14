@@ -26,10 +26,9 @@ import static org.junit.jupiter.api.Assertions.*;
  * for validation of display methods.
  * </p>
  */
-public class CapitalTests
-{
+public class CityTests {
     /** Shared City instance used across tests */
-    static City capital;
+    static City city;
 
     /** Output stream used to capture console output for validation */
     private final ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -40,7 +39,7 @@ public class CapitalTests
     @BeforeAll
     static void init()
     {
-        capital = new City();
+        city = new City();
     }
 
     /**
@@ -68,8 +67,8 @@ public class CapitalTests
      */
     @Test
     public void testDefaultConstructor(){
-        City capital = new City();
-        assertNotNull(capital, "Capital constructor should not be null");
+        City city = new City();
+        assertNotNull(city, "City constructor should not be null");
     }
 
     /**
@@ -78,71 +77,93 @@ public class CapitalTests
     @Test
     public void testParameterisedConstructorWithAllParameters()
     {
-        City capital = new City("Madrid", "Spain", 2879052);
-        assertEquals("Madrid", capital.getName());
-        assertEquals("Spain", capital.getCountry());
-        assertEquals(2879052, capital.getPopulation());
+        City city = new City("Madrid", "Spain", "Madrid", 2879052);
+        assertEquals("Madrid", city.getName());
+        assertEquals("Spain", city.getCountry());
+        assertEquals("Madrid", city.getDistrict());
+        assertEquals(2879052, city.getPopulation());
     }
 
     // ---------- Display Method Tests ----------
 
     /**
-     * Tests {@link City#displayCapital()} with all populated values.
+     * Tests {@link City#displayCity()} with all populated values.
      * Ensures that valid name and country values are printed.
      */
     @Test
     public void testDisplayWithAllPopulatedValues(){
-        City capital = new City("Madrid", "Spain", 2879052);
-        capital.displayCapital();
+        City city = new City("Madrid", "Spain",  "Madrid", 2879052);
+        city.displayCity();
 
         String result = output.toString();
         assertTrue(result.contains("Madrid"),  ("Name cannot be empty"));
         assertTrue(result.contains("Spain"),  ("Country cannot be empty"));
+        assertTrue(result.contains("Madrid"),  ("District cannot be empty"));
     }
 
     /**
-     * Tests {@link City#displayCapital()} when the city name is null.
+     * Tests {@link City#displayCity()} when the city name is null.
      * Ensures that "N/A" is displayed in place of a null value.
      */
     @Test
     public void printDisplayWithNullName(){
-        City capital= new City();
-        capital.setName(null);
-        capital.setCountry("Spain");
-        capital.setPopulation(2879052);
-        capital.displayCapital();
+        City city= new City();
+        city.setName(null);
+        city.setCountry("Spain");
+        city.setDistrict("Madrid");
+        city.setPopulation(2879052);
+        city.displayCity();
 
         String result = output.toString();
         assertTrue(result.contains("N/A"),  ("Error message not found"));
     }
 
     /**
-     * Tests {@link City#displayCapital()} when the country is null.
+     * Tests {@link City#displayCity()} when the country is null.
      * Ensures that "N/A" is displayed in place of a null value.
      */
     @Test
     public void printDisplayWithNullCountry(){
-        City capital= new City();
-        capital.setName("Madrid");
-        capital.setCountry(null);
-        capital.setPopulation(22903129);
-        capital.displayCapital();
+        City city= new City();
+        city.setName("Madrid");
+        city.setCountry(null);
+        city.setDistrict("Madrid");
+        city.setPopulation(22903129);
+        city.displayCity();
 
         String result = output.toString();
         assertTrue(result.contains("N/A"),  ("Error message not found"));
     }
 
     /**
-     * Tests {@link City#displayCapital()} when the population is zero.
+     * Tests {@link City#displayCity()} when the country is null.
+     * Ensures that "N/A" is displayed in place of a null value.
+     */
+    @Test
+    public void printDisplayWithNullDistrict(){
+        City city= new City();
+        city.setName("Madrid");
+        city.setCountry("Spain");
+        city.setDistrict(null);
+        city.setPopulation(22903129);
+        city.displayCity();
+
+        String result = output.toString();
+        assertTrue(result.contains("N/A"),  ("Error message not found"));
+    }
+
+    /**
+     * Tests {@link City#displayCity()} when the population is zero.
      * Ensures that population zero is still displayed correctly.
      */
     @Test
     public void printDisplayWithNoPopulation(){
-        City capital= new City();
-        capital.setName("Madrid");
-        capital.setCountry("Spain");
-        capital.setPopulation(0);
-        capital.displayCapital();
+        City city= new City();
+        city.setName("Madrid");
+        city.setCountry("Spain");
+        city.setDistrict("Madrid");
+        city.setPopulation(0);
+        city.displayCity();
 
         String result = output.toString();
         assertTrue(result.contains("0"),  ("Error message not found"));
@@ -151,59 +172,59 @@ public class CapitalTests
     // ---------- Display Method Tests ----------
 
     /**
-     * Tests {@link City#displayListOfCapital(List)} when the list is null.
+     * Tests {@link City#displayListOfCity(List)} when the list is null.
      * Ensures that an appropriate message is printed.
      */
     @Test
-    public void testDisplayListOfCapitalWithNull()
+    public void testDisplayListOfCityWithNull()
     {
-        City.displayListOfCapital(null);
+        City.displayListOfCity(null);
 
         String result = output.toString();
-        assertTrue(result.contains("No capitals can be displayed"), ("Error message not found"));
+        assertTrue(result.contains("No cities can be displayed"), ("Error message not found"));
     }
 
     /**
-     * Tests {@link City#displayListOfCapital(List)} when the list is empty.
-     * Ensures that a "No capitals" message is printed.
+     * Tests {@link City#displayListOfCity(List)} when the list is empty.
+     * Ensures that a "No cities" message is printed.
      */
     @Test
-    public void testDisplayListOfCapitalWithEmptyList() {
+    public void testDisplayListOfCityWithEmptyList() {
         List<City> emptyList = new ArrayList<>();
-        City.displayListOfCapital(emptyList);
+        City.displayListOfCity(emptyList);
 
         String result = output.toString();
-        assertTrue(result.contains("No capitals can be displayed"), ("Error message not found"));
+        assertTrue(result.contains("No cities can be displayed"), ("Error message not found"));
     }
 
     /**
-     * Tests {@link City#displayListOfCapital(List)} when one member of the list is null.
+     * Tests {@link City#displayListOfCity(List)} when one member of the list is null.
      * Ensures that a warning message is printed for the null entry.
      */
     @Test
-    public void testDisplayListOfCapitalWithNullMember()
+    public void testDisplayListOfCityWithNullMember()
     {
         List<City> list = new ArrayList<>();
         list.add(null);
-        City.displayListOfCapital(list);
+        City.displayListOfCity(list);
 
         String result = output.toString();
-        assertTrue(result.contains("Warning: capital is null"), ("Error message not found"));
+        assertTrue(result.contains("Warning: city is null"), ("Error message not found"));
     }
 
     /**
-     * Tests {@link City#displayListOfCapital(List)} with a normal list containing valid city data.
+     * Tests {@link City#displayListOfCity(List)} with a normal list containing valid city data.
      * Ensures that all valid cities are displayed correctly.
      */
     @Test
-    public void testDisplayListOfCapitalWithNormalList()
+    public void testDisplayListOfCityWithNormalList()
     {
         List<City> list = new ArrayList<>();
-        City madrid = new City("Madrid", "Spain",2879052);
-        City london = new City("London", "United Kingdom", 7285000);
+        City madrid = new City("Madrid", "Spain", "Madrid", 2879052);
+        City london = new City("London", "United Kingdom", "England", 7285000);
         list.add(madrid);
         list.add(london);
-        City.displayListOfCapital(list);
+        City.displayListOfCity(list);
 
         String result = output.toString();
         assertTrue(result.contains("Madrid"), ("Error message not found"));

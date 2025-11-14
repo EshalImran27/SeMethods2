@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CountryQueries {
-    private Connection con;
+    private final Connection con;
     public CountryQueries(Connection con) {
         this.con = con;
     }
@@ -23,23 +23,24 @@ public class CountryQueries {
         }
         return countries;
     }
-    private void SqlQuery(String sql) throws SQLException{
+    private void SqlQuery(String sql) throws SQLException {
         List<Country> countries = new ArrayList<>();
         if(con==null){
             System.out.println("Database Connection is null");
 
+        }else{
+            try{
+                Statement stmt = con.createStatement();
+                ResultSet rset = stmt.executeQuery(sql);
+                countries=CountriesFromResultSet(rset);
+                rset.close();
+                stmt.close();
+            }
+            catch(Exception e){
+                System.out.println("SQL Exception: "+e.getMessage());
+            }
+            Country.displayCountries(countries);
         }
-        try{
-            Statement stmt = con.createStatement();
-            ResultSet rset = stmt.executeQuery(sql);
-            countries=CountriesFromResultSet(rset);
-            rset.close();
-            stmt.close();
-        }
-        catch(Exception e){
-            System.out.println("SQL Exception: "+e.getMessage());
-        }
-        Country.displayCountries(countries);
     }
     public void getCountriesByPopulationInWorld() throws SQLException {
         String sqlStatement = "SELECT code, name, continent, region, capital, population " +
