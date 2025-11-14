@@ -114,6 +114,8 @@ public class App
         // Create application instance
         App WorldReport = new App();
 
+        List <City> report;
+
         // Connect to the database (use default if no arguments provided)
         if(args.length < 1){
             WorldReport.connect("localhost:33060", 30000);
@@ -134,22 +136,18 @@ public class App
 
         // ===== Capital Queries =====
         CapitalQueries queryCapital = new CapitalQueries(WorldReport.con);
-        List <City> report;
 
-        // Retrieve and display all capitals globally by population
-        report = queryCapital.getReportCapitalGlobalList();
-        System.out.println("All capitals in the world ranked from largest population to smallest: ");
-        City.displayListOfCapital(report);
 
         // Retrieve various capital city reports
         queryCapital.getReportCapitalGlobal();
         queryCapital.getReportCapitalContinent("Asia");
         queryCapital.getReportCapitalRegion("Caribbean");
+        queryCapital.getReportTopCapitalGlobal(5);
         queryCapital.getReportTopCapitalContinent("Asia",5);
         queryCapital.getReportTopCapitalRegion("Caribbean",5);
-        queryCapital.getReportTopCapitalGlobal(5);
 
         // ===== Report Output =====
+        report = queryCapital.getReportCapitalGlobalList();
         queryCapital.outputCapitalReport(report, "Capital Global Report");
 
         report = queryCapital.getReportCapitalContinentList("Asia");
@@ -158,14 +156,60 @@ public class App
         report = queryCapital.getReportCapitalRegionList("Caribbean");
         queryCapital.outputCapitalReport(report, "Capital Region Report");
 
+        report = queryCapital.getReportTopCapitalGlobalList(5);
+        queryCapital.outputCapitalReport(report, "Capital Top Report");
+
         report = queryCapital.getReportTopCapitalContinentList("Asia", 5);
         queryCapital.outputCapitalReport(report, "Capital Top Continent Report");
 
         report = queryCapital.getReportTopCapitalRegionList("Caribbean", 5);
         queryCapital.outputCapitalReport(report, "Capital Top Region Report");
 
-        report = queryCapital.getReportTopCapitalGlobalList(5);
-        queryCapital.outputCapitalReport(report, "Capital Top Report");
+        // ===== City Queries =====
+        CityQueries queryCity = new CityQueries(WorldReport.con);
+
+        queryCity.getReportCityGlobal();
+        queryCity.getReportCityContinent("Asia");
+        queryCity.getReportCityRegion("Caribbean");
+        queryCity.getReportCityCountry("Spain");
+        queryCity.getReportCityDistrict("Madrid");
+        queryCity.getReportTopCityGlobal(5);
+        queryCity.getReportTopCityContinent("Asia",5);
+        queryCity.getReportTopCityRegion("Caribbean",5);
+        queryCity.getReportTopCityCountry("Spain", 5);
+        queryCity.getReportTopCityDistrict("Madrid", 5);
+
+
+        // ===== Report Output =====
+        report = queryCity.getReportCityGlobalList();
+        queryCity.outputCityReport(report, "City Global Report");
+
+        report = queryCity.getReportCityContinentList("Asia");
+        queryCity.outputCityReport(report, "City Continent Report");
+
+        report = queryCity.getReportCityRegionList("Caribbean");
+        queryCity.outputCityReport(report, "City Region Report");
+
+        report = queryCity.getReportCityCountryList("Spain");
+        queryCity.outputCityReport(report, "City Country Report");
+
+        report = queryCity.getReportCityDistrictList("Madrid");
+        queryCity.outputCityReport(report, "City District Report");
+
+        report = queryCity.getReportTopCityGlobalList(5);
+        queryCity.outputCityReport(report, "City Top Report");
+
+        report = queryCity.getReportTopCityContinentList("Asia", 5);
+        queryCity.outputCityReport(report, "City Top Continent Report");
+
+        report = queryCity.getReportTopCityRegionList("Caribbean", 5);
+        queryCity.outputCityReport(report, "City Top Region Report");
+
+        report = queryCity.getReportTopCityCountryList("Spain", 5);
+        queryCity.outputCityReport(report, "City Country Report");
+
+        report = queryCity.getReportTopCityDistrictList("Madrid", 5);
+        queryCity.outputCityReport(report, "City District Report");
 
         // Disconnect from database
         WorldReport.disconnect();
