@@ -100,6 +100,45 @@ public class City {
     // ==============================
 
     /**
+     * Displays the details of a city in a formatted table row.
+     * Handles potential null values gracefully.
+     */
+    public void displayCity(){
+        System.out.printf(
+                "%-30s %-30s %-30s %10d%n",
+                this.name != null ? this.name : "N/A",
+                this.country != null ? this.country : "N/A",
+                this.district != null ? this.district : "N/A",
+                this.population
+        );
+    }
+
+    /**
+     * Displays a formatted list of cities.
+     * Includes column headers and error handling for null or empty lists.
+     *
+     * @param listOfCity The list of cities to display.
+     */
+    public static void displayListOfCity(List<City> listOfCity)
+    {
+        if (listOfCity == null || listOfCity.isEmpty()) {
+            System.out.println("No cities can be displayed");
+            return;
+        }
+        System.out.println("=================================================================");
+        System.out.printf("%-30s %-30s %-30s %10s%n",
+                "Name", "Country", "District", "Population");
+        System.out.println("-----------------------------------------------------------------");
+        for (City city : listOfCity) {
+            if (city == null) {
+                System.out.println("Warning: city is null");
+                continue;
+            }
+            city.displayCity();
+        }
+    }
+
+    /**
      * Displays the details of a capital city in a formatted table row.
      * Handles potential null values gracefully.
      */
