@@ -8,7 +8,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.sql.*;
 
-import static com.napier.sem2.CityIntegrationTets.cityQueries;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -27,7 +26,7 @@ import static org.mockito.Mockito.*;
  *     <li>Verify proper handling of normal data, null connections, and SQL exceptions.</li>
  * </ul>
  */
-public class CityQueriesTets {
+public class CityQueriesTests {
     /** Mocked database connection. */
     private Connection MockCon;
 
