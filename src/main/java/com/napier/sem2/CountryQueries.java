@@ -1,5 +1,9 @@
 package com.napier.sem2;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +46,7 @@ public class CountryQueries {
      * @param sql The SQL query string.
      * @throws SQLException If an SQL or connection error occurs.
      */
-    private void SqlQuery(String sql) throws SQLException {
+    private List<Country>  SqlQuery(String sql) throws SQLException {
         List<Country> countries = new ArrayList<>();
         if(con==null){
             System.out.println("Database Connection is null");
@@ -60,44 +64,45 @@ public class CountryQueries {
             }
             Country.displayCountries(countries);
         }
+        return countries;
     }
     /**
      * Prints all countries in the world ranked by population.
      *
      * @throws SQLException If a database access error occurs.
      */
-    public void getCountriesByPopulationInWorld() throws SQLException {
+    public List<Country>  getCountriesByPopulationInWorld() throws SQLException {
         String sqlStatement = "SELECT code, name, continent, region, capital, population " +
                 "FROM country " +
                 "ORDER BY population DESC";
         System.out.println("All Countries in the world ranked from largest population to smallest: ");
-        SqlQuery(sqlStatement);
+        return SqlQuery(sqlStatement);
     }
     /**
      * Prints all countries in a specific continent ranked by population.
      *
      * @throws SQLException If a database access error occurs.
      */
-    public void getCountriesByPopulationInContinent(String continent) throws SQLException {
+    public List<Country>  getCountriesByPopulationInContinent(String continent) throws SQLException {
         String sqlStatement = "SELECT code, name, continent, region, capital, population " +
                 "FROM country " +
                 "WHERE continent = '" + continent + "'" +
                 " ORDER BY population DESC";
         System.out.println("All Countries in " + continent + " ranked from largest population to smallest: ");
-        SqlQuery(sqlStatement);
+        return SqlQuery(sqlStatement);
     }
     /**
      * Prints all countries in a specific region ranked by population.
      *
      * @throws SQLException If a database access error occurs.
      */
-    public void getCountriesByPopulationInRegion(String region) throws SQLException {
+    public List<Country>  getCountriesByPopulationInRegion(String region) throws SQLException {
         String sqlStatement = "SELECT code, name, continent, region, capital, population " +
                 "FROM country " +
                 "WHERE region = '" + region + "'" +
                 "ORDER BY population DESC";
         System.out.println("All Countries in the region: " + region+ " ranked from largest population to smallest: ");
-        SqlQuery(sqlStatement);
+        return SqlQuery(sqlStatement);
 
     }
     /**
@@ -106,13 +111,13 @@ public class CountryQueries {
      * @param n The number of countries to display.
      * @throws SQLException If a database access error occurs.
      */
-    public void getTopCountriesInWorld(int n) throws SQLException {
+    public List<Country>  getTopCountriesInWorld(int n) throws SQLException {
         String sqlStatement = "SELECT code, name, continent, region, capital, population " +
                 "FROM country " +
                 "ORDER BY population DESC " +
                 "LIMIT " + n;
         System.out.println("Top " + n + " Countries in the world ranked from largest population to smallest: ");
-        SqlQuery(sqlStatement);
+        return SqlQuery(sqlStatement);
     }
     /**
      * Prints the top N countries in a continent ranked by population.
@@ -120,14 +125,14 @@ public class CountryQueries {
      * @param n The number of countries to display.
      * @throws SQLException If a database access error occurs.
      */
-    public void getTopCountriesInContinent(String continent, int n) throws SQLException {
+    public List<Country>  getTopCountriesInContinent(String continent, int n) throws SQLException {
         String sqlStatement = "SELECT code, name, continent, region, capital, population " +
                 "FROM country " +
                 "WHERE continent = '" + continent + "' " +
                 "ORDER BY population DESC " +
                 "LIMIT " + n;
         System.out.println("Top " + n + " Countries in the continent " + continent + " ranked from largest population to smallest: ");
-        SqlQuery(sqlStatement);
+        return SqlQuery(sqlStatement);
     }
     /**
      * Prints the top N countries in a region ranked by population.
@@ -135,13 +140,49 @@ public class CountryQueries {
      * @param n The number of countries to display.
      * @throws SQLException If a database access error occurs.
      */
-    public void getTopCountriesInRegion(String region, int n) throws SQLException {
+    public List<Country>  getTopCountriesInRegion(String region, int n) throws SQLException {
         String sqlStatement = "SELECT code, name, continent, region, capital, population " +
                 "FROM country " +
                 "WHERE region = '" + region + "' " +
                 "ORDER BY population DESC " +
                 "LIMIT " + n;
         System.out.println("Top " + n + " Countries in the region " + region + " ranked from largest population to smallest: ");
-        SqlQuery(sqlStatement);
+        return SqlQuery(sqlStatement);
+    }
+
+    // ============================================================
+    //                  REPORT OUTPUT METHODS
+    // ============================================================
+
+    /**
+     * Outputs a list of countries to a Markdown (.md) report file.
+     *
+     * @param listOfCountries A list of {@link Country} objects to include in the report.
+     * @param filename The output filename (without extension).
+     */
+    public void outputCountryReport(List<Country> listOfCountries, String filename) {
+        // Check cities is not null
+        if (listOfCountries == null) {
+            System.out.println("No countries to be displayed");
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        // Print header
+        sb.append("| Code | Name | Continent | Region | Population | Capital|\r\n");
+        // Loop over all listOfCities in the list
+        for (Country country : listOfCountries) {
+            if (country == null) continue;
+            sb.append("| " + country.getCode() +" | " + country.getName() + " | " + country.getContinent() + " | "  + country.getRegion() + " | "  +
+                    country.getPopulation() +" | " + country.getCapital() + " |\r\n");
+        }
+        try {
+            new File("./reports/").mkdir();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(new File("./reports/" + filename + ".md")));
+            writer.write(sb.toString());
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
