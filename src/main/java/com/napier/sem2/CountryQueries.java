@@ -169,7 +169,7 @@ public class CountryQueries {
 
         StringBuilder sb = new StringBuilder();
         // Print header
-        sb.append("| Code | Name | Continent | Region | Population | Capital|\r\n");
+        sb.append("| Code | Name | Continent | Region | Population | Capital |\r\n");
         // Loop over all listOfCities in the list
         for (Country country : listOfCountries) {
             if (country == null) continue;

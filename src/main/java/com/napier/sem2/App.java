@@ -136,22 +136,22 @@ public class App
         countries.getTopCountriesInRegion("North America",6);
         // ===== Report Output =====
         countryReport = countries.getCountriesByPopulationInWorld();
-        countries.outputCountryReport(countryReport, "Capital Global Report");
+        countries.outputCountryReport(countryReport, "Country Global Report");
 
         countryReport = countries.getCountriesByPopulationInContinent("Europe");
-        countries.outputCountryReport(countryReport, "Capital Continent Report");
+        countries.outputCountryReport(countryReport, "Country Continent Report");
 
         countryReport = countries.getCountriesByPopulationInRegion("Caribbean");
-        countries.outputCountryReport(countryReport, "Capital Region Report");
+        countries.outputCountryReport(countryReport, "Country Region Report");
 
         countryReport = countries.getTopCountriesInWorld(10);
-        countries.outputCountryReport(countryReport, "Capital Top Report");
+        countries.outputCountryReport(countryReport, "Country Top Report");
 
         countryReport = countries.getTopCountriesInContinent("Africa",7);
-        countries.outputCountryReport(countryReport, "Capital Top Continent Report");
+        countries.outputCountryReport(countryReport, "Country Top Continent Report");
 
         countryReport = countries.getTopCountriesInRegion("North America",6);
-        countries.outputCountryReport(countryReport, "Capital Top Region Report");
+        countries.outputCountryReport(countryReport, "Country Top Region Report");
 
         // ===== City Queries =====
 
