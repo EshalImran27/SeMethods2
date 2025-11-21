@@ -73,5 +73,5 @@ jobs:
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4.2.5
         with:
-            branch: reports # The branch the action should deploy to.
+            branch: reports-branch # The branch the action should deploy to.
             folder: reports # The folder we are copying
