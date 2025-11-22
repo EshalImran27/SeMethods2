@@ -16,7 +16,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
       - name: Unit Tests
-        run: mvn -Dtest=CapitalTests,CountryTests,CountryQeuriesTests,CapitalQueriesTests test
+        run: mvn -Dtest=CapitalTests,CountryTests,CountryQeuriesTests,CapitalQueriesTests,CityTests,CityQueriesTets test
   IntegrationTests:
       name: Integration Tests
       runs-on: ubuntu-22.04
