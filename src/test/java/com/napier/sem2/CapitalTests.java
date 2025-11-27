@@ -148,7 +148,7 @@ public class CapitalTests
         assertTrue(result.contains("0"),  ("Error message not found"));
     }
 
-    // ---------- Display Method Tests ----------
+    // ---------- List Method Tests ----------
 
     /**
      * Tests {@link City#displayListOfCapital(List)} when the list is null.
