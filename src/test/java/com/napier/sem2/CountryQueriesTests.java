@@ -16,7 +16,7 @@ public class CountryQueriesTests {
     private ResultSet MockResultSet;
     private CountryQueries MockCountryQueries;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    private Country mockCountry;
+    private List<Country> mockCountry;
     private Handler testHandler;
     private Logger countryQueriesLogger;
     private Logger countryLogger;
