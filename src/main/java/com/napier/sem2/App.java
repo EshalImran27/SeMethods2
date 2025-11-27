@@ -211,6 +211,16 @@ public class App
         report = queryCity.getReportTopCityDistrictList("Madrid", 5);
         queryCity.outputCityReport(report, "City District Report");
 
+        // ===== Population Queries =====
+        PopulationQueries populationQueries = new PopulationQueries(WorldReport.con);
+
+        populationQueries.getWorldPopulation();
+        populationQueries.getContinentPopulation("Europe");
+        populationQueries.getRegionPopulation("Caribbean");
+        populationQueries.getCountryPopulation("Spain");
+        populationQueries.getDistrictPopulation("Córdoba");
+        populationQueries.getCityPopulation("Madrid");
+
         // Disconnect from database
         WorldReport.disconnect();
     }
