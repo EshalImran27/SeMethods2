@@ -177,7 +177,7 @@ public class LanguageQueries {
         for (Language language : listOfLanguages) {
             if (language == null) continue;
             sb.append("| " + language.getName() + " | "+ language.getPercentage() +
-                    "| " + language.getPopulation() + " |\r\n");
+                    " | " + language.getPopulation() + " |\r\n");
         }
         try {
             new File("./reports/").mkdir();

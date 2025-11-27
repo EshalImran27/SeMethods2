@@ -73,7 +73,7 @@ public class Language {
         System.out.printf(
                 "%-10s %-12s %-15s%n",
                 this.name != null ? this.name : "N/A",
-                this.percentage,
+                this.percentage != null ? this.percentage : "N/A",
                 this.population
         );
     }
