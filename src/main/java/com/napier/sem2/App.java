@@ -211,6 +211,16 @@ public class App
         report = queryCity.getReportTopCityDistrictList("Madrid", 5);
         queryCity.outputCityReport(report, "City District Report");
 
+        // ===== Language Queries =====
+        LanguageQueries queryLanguage = new LanguageQueries(WorldReport.con);
+        List <Language> reportLanguage;
+
+        queryLanguage.getReportLanguage();
+
+        // ===== Report Output =====
+        reportLanguage = queryLanguage.getReportLanguageList();
+        queryLanguage.outputLanguageReport(reportLanguage, "Language Report");
+
         // Disconnect from database
         WorldReport.disconnect();
     }
