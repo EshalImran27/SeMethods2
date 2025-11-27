@@ -9,7 +9,7 @@ import java.io.PrintStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.logging.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -33,6 +33,8 @@ public class CapitalTests
 
     /** Output stream used to capture console output for validation */
     private final ByteArrayOutputStream output = new ByteArrayOutputStream();
+    private Handler testHandler;
+    private Logger cityLogger;
 
     /**
      * Initializes a base {@link City} object before all tests run.
@@ -49,7 +51,19 @@ public class CapitalTests
      */
     @BeforeEach
     void setUpOutput(){
-        System.setOut(new PrintStream(output));
+
+        cityLogger = Logger.getLogger(City.class.getName());
+        cityLogger.setUseParentHandlers(false);
+        testHandler = new StreamHandler(new PrintStream(output), new SimpleFormatter()) {
+            @Override
+            public synchronized void publish(LogRecord record) {
+                super.publish(record);
+                flush();
+            }
+        };
+        testHandler.setLevel(Level.ALL);
+        cityLogger.addHandler(testHandler);
+        cityLogger.setLevel(Level.ALL);
     }
 
     /**
@@ -58,7 +72,12 @@ public class CapitalTests
      */
     @AfterEach
     void resetOutput(){
-        System.setOut(System.out);
+
+        if (testHandler != null) {
+            testHandler.close();
+            cityLogger.removeHandler(testHandler);
+        }
+        cityLogger.setUseParentHandlers(true);
     }
 
     // ---------- Constructor Tests ----------

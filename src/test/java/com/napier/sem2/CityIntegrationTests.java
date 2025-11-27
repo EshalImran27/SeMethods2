@@ -64,12 +64,15 @@ public class CityIntegrationTests {
     @Test
     void testGetReportCityGlobalList() throws SQLException {
         List<City> cities = cityQueries.getReportCityGlobalList();
-        assertEquals("Mumbai (Bombay)", cities.get(0).getName());
-        assertEquals("India", cities.get(0).getCountry());
-        assertEquals("Maharashtra", cities.get(0).getDistrict());
-        assertEquals(10500000, cities.get(0).getPopulation());
-    }
+        City city = cities.get(0);
 
+        boolean allCorrect = "Mumbai (Bombay)".equals(city.getName()) &&
+                "India".equals(city.getCountry()) &&
+                "Maharashtra".equals(city.getDistrict()) &&
+                10500000 == city.getPopulation();
+
+        assertTrue(allCorrect, "First city should match expected values");
+    }
     /**
      * Tests retrieval of cities by continent ("Asia") and validates the data for the 3rd record.
      *
@@ -78,10 +81,14 @@ public class CityIntegrationTests {
     @Test
     void getReportCityContinentList() throws SQLException {
         List<City> cities = cityQueries.getReportCityContinentList("Asia");
-        assertEquals("Shanghai", cities.get(2).getName());
-        assertEquals("China", cities.get(2).getCountry());
-        assertEquals("Shanghai", cities.get(2).getDistrict());
-        assertEquals(9696300, cities.get(2).getPopulation());
+        City city = cities.get(2);
+
+        boolean allCorrect = "Shanghai".equals(city.getName()) &&
+                "China".equals(city.getCountry()) &&
+                "Shanghai".equals(city.getDistrict()) &&
+                9696300 == city.getPopulation();
+
+        assertTrue(allCorrect, "Third city in Asia should match expected values");
     }
 
     /**
@@ -92,10 +99,14 @@ public class CityIntegrationTests {
     @Test
     void getReportCityRegion() throws SQLException {
         List<City> cities = cityQueries.getReportCityRegionList("Caribbean");
-        assertEquals("La Habana", cities.get(0).getName());
-        assertEquals("Cuba", cities.get(0).getCountry());
-        assertEquals("La Habana", cities.get(0).getDistrict());
-        assertEquals(2256000, cities.get(0).getPopulation());
+        City city = cities.get(0);
+
+        boolean allCorrect = "La Habana".equals(city.getName()) &&
+                "Cuba".equals(city.getCountry()) &&
+                "La Habana".equals(city.getDistrict()) &&
+                2256000 == city.getPopulation();
+
+        assertTrue(allCorrect, "First city in Caribbean should match expected values");
     }
 
     /**
@@ -106,10 +117,14 @@ public class CityIntegrationTests {
     @Test
     void getReportCityCountry() throws SQLException {
         List<City> cities = cityQueries.getReportCityCountryList("Spain");
-        assertEquals("Barcelona", cities.get(1).getName());
-        assertEquals("Spain", cities.get(1).getCountry());
-        assertEquals("Katalonia", cities.get(1).getDistrict());
-        assertEquals(1503451, cities.get(1).getPopulation());
+        City city = cities.get(1);
+
+        boolean allCorrect = "Barcelona".equals(city.getName()) &&
+                "Spain".equals(city.getCountry()) &&
+                "Katalonia".equals(city.getDistrict()) &&
+                1503451 == city.getPopulation();
+
+        assertTrue(allCorrect, "Second city in Spain should match expected values");
     }
 
     /**
@@ -120,10 +135,14 @@ public class CityIntegrationTests {
     @Test
     void getReportCityDistrict() throws SQLException {
         List<City> cities = cityQueries.getReportCityDistrictList("Madrid");
-        assertEquals("Madrid", cities.get(0).getName());
-        assertEquals("Spain", cities.get(0).getCountry());
-        assertEquals("Madrid", cities.get(0).getDistrict());
-        assertEquals(2879052, cities.get(0).getPopulation());
+        City city = cities.get(0);
+
+        boolean allCorrect = "Madrid".equals(city.getName()) &&
+                "Spain".equals(city.getCountry()) &&
+                "Madrid".equals(city.getDistrict()) &&
+                2879052 == city.getPopulation();
+
+        assertTrue(allCorrect, "First city in Madrid district should match expected values");
     }
 
     /**
@@ -135,10 +154,14 @@ public class CityIntegrationTests {
     @Test
     void getReportTopCityGlobal() throws SQLException {
         List<City> cities = cityQueries.getReportTopCityGlobalList(5);
-        assertEquals("Jakarta", cities.get(4).getName());
-        assertEquals("Indonesia", cities.get(4).getCountry());
-        assertEquals("Jakarta Raya", cities.get(4).getDistrict());
-        assertEquals(9604900, cities.get(4).getPopulation());
+        City city = cities.get(4);
+
+        boolean allCorrect = "Jakarta".equals(city.getName()) &&
+                "Indonesia".equals(city.getCountry()) &&
+                "Jakarta Raya".equals(city.getDistrict()) &&
+                9604900 == city.getPopulation();
+
+        assertTrue(allCorrect, "Fifth city in global top 5 should match expected values");
     }
 
     /**
@@ -150,10 +173,14 @@ public class CityIntegrationTests {
     @Test
     void getReportTopCityContinent() throws SQLException {
         List<City> cities = cityQueries.getReportTopCityContinentList("Asia",5);
-        assertEquals("Karachi", cities.get(4).getName());
-        assertEquals("Pakistan", cities.get(4).getCountry());
-        assertEquals("Sindh", cities.get(4).getDistrict());
-        assertEquals(9269265, cities.get(4).getPopulation());
+        City city = cities.get(4);
+
+        boolean allCorrect = "Karachi".equals(city.getName()) &&
+                "Pakistan".equals(city.getCountry()) &&
+                "Sindh".equals(city.getDistrict()) &&
+                9269265 == city.getPopulation();
+
+        assertTrue(allCorrect, "Fifth city in Asia top 5 should match expected values");
     }
 
     /**
@@ -164,11 +191,15 @@ public class CityIntegrationTests {
      */
     @Test
     void getReportTopCityRegion() throws SQLException {
-        List<City> cities = cityQueries.getReportTopCityRegionList("Caribbean",5);
-        assertEquals("Santiago de Cuba", cities.get(4).getName());
-        assertEquals("Cuba", cities.get(4).getCountry());
-        assertEquals("Santiago de Cuba", cities.get(4).getDistrict());
-        assertEquals(433180, cities.get(4).getPopulation());
+        List<City> cities = cityQueries.getReportTopCityRegionList("Caribbean", 5);
+        City city = cities.get(4);
+
+        // Combine all assertions into one
+        assertTrue("Santiago de Cuba".equals(city.getName()) &&
+                        "Cuba".equals(city.getCountry()) &&
+                        "Santiago de Cuba".equals(city.getDistrict()) &&
+                        433180 == city.getPopulation(),
+                "City at index 4 should have correct attributes");
     }
 
     /**
@@ -179,13 +210,16 @@ public class CityIntegrationTests {
      */
     @Test
     void getReportTopCityCountry() throws SQLException {
-        List<City> cities = cityQueries.getReportTopCityCountryList("Spain",5);
-        assertEquals("Zaragoza", cities.get(4).getName());
-        assertEquals("Spain", cities.get(4).getCountry());
-        assertEquals("Aragonia", cities.get(4).getDistrict());
-        assertEquals(603367, cities.get(4).getPopulation());
-    }
+        List<City> cities = cityQueries.getReportTopCityCountryList("Spain", 5);
+        City city = cities.get(4);
 
+        // Combine all assertions into one
+        assertTrue("Zaragoza".equals(city.getName()) &&
+                        "Spain".equals(city.getCountry()) &&
+                        "Aragonia".equals(city.getDistrict()) &&
+                        603367 == city.getPopulation(),
+                "City at index 4 should have correct attributes");
+    }
     /**
             * Tests retrieval of the top 5 cities in a specific district ("Madrid").
             * Validates the 5th record in the result list.
@@ -194,10 +228,14 @@ public class CityIntegrationTests {
      */
     @Test
     void getReportTopCityDistrict() throws SQLException {
-        List<City> cities = cityQueries.getReportTopCityDistrictList("Madrid",5);
-        assertEquals("Fuenlabrada", cities.get(3).getName());
-        assertEquals("Spain", cities.get(3).getCountry());
-        assertEquals("Madrid", cities.get(3).getDistrict());
-        assertEquals(171173, cities.get(3).getPopulation());
+        List<City> cities = cityQueries.getReportTopCityDistrictList("Madrid", 5);
+        City city = cities.get(3);
+
+        // Combine all assertions into one
+        assertTrue("Fuenlabrada".equals(city.getName()) &&
+                        "Spain".equals(city.getCountry()) &&
+                        "Madrid".equals(city.getDistrict()) &&
+                        171173 == city.getPopulation(),
+                "City at index 3 should have correct attributes");
     }
 }

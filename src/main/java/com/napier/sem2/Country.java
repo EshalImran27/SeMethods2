@@ -3,6 +3,8 @@ package com.napier.sem2;
 
 import java.util.List;
 import java.sql.*;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 /**
  * Represents a Country entity in the world database.
@@ -10,6 +12,7 @@ import java.sql.*;
  * It also provides utility methods for displaying country data.
  */
 public class Country {
+    private static final Logger LOGGER = Logger.getLogger(Country.class.getName());
     /** separate code for each country */
     private String code;
     /** specific name of a country */
@@ -75,13 +78,14 @@ public class Country {
      * Handles potential null values gracefully.
      */
     public void display(){
-        System.out.printf("%-3s %-40s %-15s %-30s %10d %s%n",
+        String formatted = String.format("%-3s %-40s %-15s %-30s %10d %d",
                 this.code != null ? this.code : "N/A",
                 this.name != null ? this.name : "N/A",
                 this.continent != null ? this.continent : "N/A",
                 this.region != null ? this.region : "N/A",
                 this.population,
                 this.capital);
+        LOGGER.info(formatted);
     }
     /**
      * Displays a formatted list of countries.
@@ -91,35 +95,23 @@ public class Country {
      */
     public static void displayCountries(List<Country> countries) {
         if (countries == null || countries.isEmpty()) {
-            System.out.println("No countries can be displayed");
+            LOGGER.warning("No countries can be displayed");
             return;
         }
-        System.out.println("=================================================================");
-        System.out.printf("%-3s %-40s %-15s %-30s %10s %s%n",
-                "Code", "Name", "Continent", "Region", "Population", "Capital");
-        System.out.println("-----------------------------------------------------------------");
-        /*int count = 0;
-        *int DisplayCount = 0;
-        *int total = countries.size();
-        */
+        LOGGER.info("=================================================================");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info(String.format("%-3s %-40s %-15s %-30s %10s %s",
+                    "Code", "Name", "Continent", "Region", "Population", "Capital"));
+        }
+        LOGGER.info("-----------------------------------------------------------------");
 
         for (Country country : countries) {
             if (country == null) {
-                System.out.println("Warning: country is null");
+                LOGGER.warning("Warning: country is null");
                 //count++;
                 continue;
             }
             country.display();
-            //count++;
-            // DisplayCount++;
-            // Limit output if specified
-    /*        if (limit > 0 && DisplayCount >= limit) {
-                System.out.println("... and " + (total - limit) + " more countries");
-                break;
-            }
-        }
-        System.out.println("Total countries displayed: " + DisplayCount);
-     */
         }
     }
 }

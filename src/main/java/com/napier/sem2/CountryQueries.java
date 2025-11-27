@@ -7,10 +7,14 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 public class CountryQueries {
     /** Connection object used to communicate with the database. */
     private final Connection con;
+    private static final Logger LOGGER = Logger.getLogger(CountryQueries.class.getName());
+
     /**
      * Constructs a new {@code CountryQueries} instance.
      *
@@ -49,7 +53,7 @@ public class CountryQueries {
     private List<Country>  SqlQuery(String sql) throws SQLException {
         List<Country> countries = new ArrayList<>();
         if(con==null){
-            System.out.println("Database Connection is null");
+            LOGGER.info("Database Connection is null");
 
         }else{
             try{
@@ -60,7 +64,7 @@ public class CountryQueries {
                 stmt.close();
             }
             catch(Exception e){
-                System.out.println("SQL Exception: "+e.getMessage());
+                LOGGER.log(Level.SEVERE,"SQL Exception: ", e);
             }
             Country.displayCountries(countries);
         }
@@ -75,7 +79,7 @@ public class CountryQueries {
         String sqlStatement = "SELECT code, name, continent, region, capital, population " +
                 "FROM country " +
                 "ORDER BY population DESC";
-        System.out.println("All Countries in the world ranked from largest population to smallest: ");
+        LOGGER.info("All Countries in the world ranked from largest population to smallest: ");
         return SqlQuery(sqlStatement);
     }
     /**
@@ -88,7 +92,9 @@ public class CountryQueries {
                 "FROM country " +
                 "WHERE continent = '" + continent + "'" +
                 " ORDER BY population DESC";
-        System.out.println("All Countries in " + continent + " ranked from largest population to smallest: ");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("All Countries in " + continent + " ranked from largest population to smallest: ");
+        }
         return SqlQuery(sqlStatement);
     }
     /**
@@ -101,7 +107,9 @@ public class CountryQueries {
                 "FROM country " +
                 "WHERE region = '" + region + "'" +
                 "ORDER BY population DESC";
-        System.out.println("All Countries in the region: " + region+ " ranked from largest population to smallest: ");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("All Countries in the region: " + region + " ranked from largest population to smallest: ");
+        }
         return SqlQuery(sqlStatement);
 
     }
@@ -116,7 +124,9 @@ public class CountryQueries {
                 "FROM country " +
                 "ORDER BY population DESC " +
                 "LIMIT " + n;
-        System.out.println("Top " + n + " Countries in the world ranked from largest population to smallest: ");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("Top " + n + " Countries in the world ranked from largest population to smallest: ");
+        }
         return SqlQuery(sqlStatement);
     }
     /**
@@ -131,7 +141,9 @@ public class CountryQueries {
                 "WHERE continent = '" + continent + "' " +
                 "ORDER BY population DESC " +
                 "LIMIT " + n;
-        System.out.println("Top " + n + " Countries in the continent " + continent + " ranked from largest population to smallest: ");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("Top " + n + " Countries in the continent " + continent + " ranked from largest population to smallest: ");
+        }
         return SqlQuery(sqlStatement);
     }
     /**
@@ -146,7 +158,9 @@ public class CountryQueries {
                 "WHERE region = '" + region + "' " +
                 "ORDER BY population DESC " +
                 "LIMIT " + n;
-        System.out.println("Top " + n + " Countries in the region " + region + " ranked from largest population to smallest: ");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("Top " + n + " Countries in the region " + region + " ranked from largest population to smallest: ");
+        }
         return SqlQuery(sqlStatement);
     }
 
@@ -163,7 +177,7 @@ public class CountryQueries {
     public void outputCountryReport(List<Country> listOfCountries, String filename) {
         // Check cities is not null
         if (listOfCountries == null) {
-            System.out.println("No countries to be displayed");
+            LOGGER.warning("No countries to be displayed");
             return;
         }
 
@@ -182,7 +196,7 @@ public class CountryQueries {
             writer.write(sb.toString());
             writer.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Failed to generate report", e);
         }
     }
 }

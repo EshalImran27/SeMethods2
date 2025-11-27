@@ -9,7 +9,7 @@ import java.io.PrintStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.logging.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -32,6 +32,8 @@ public class CityTests {
 
     /** Output stream used to capture console output for validation */
     private final ByteArrayOutputStream output = new ByteArrayOutputStream();
+    private Handler testHandler;
+    private Logger cityLogger;
 
     /**
      * Initializes a base {@link City} object before all tests run.
@@ -48,7 +50,20 @@ public class CityTests {
      */
     @BeforeEach
     void setUpOutput(){
-        System.setOut(new PrintStream(output));
+
+        cityLogger = Logger.getLogger(City.class.getName());
+        cityLogger.setUseParentHandlers(false); // Remove default handlers
+
+        testHandler = new StreamHandler(new PrintStream(output), new SimpleFormatter()) {
+            @Override
+            public synchronized void publish(LogRecord record) {
+                super.publish(record);
+                flush(); // Ensure the message is written to the stream
+            }
+        };
+        testHandler.setLevel(Level.ALL);
+        cityLogger.addHandler(testHandler);
+        cityLogger.setLevel(Level.ALL);
     }
 
     /**
@@ -56,10 +71,14 @@ public class CityTests {
      * Prevents side effects across tests.
      */
     @AfterEach
-    void resetOutput(){
-        System.setOut(System.out);
+    void resetOutput() {
+        if (testHandler != null) {
+            cityLogger.removeHandler(testHandler);
+            testHandler.close();
+        }
+        // Restore default logging behavior
+        cityLogger.setUseParentHandlers(true);
     }
-
     // ---------- Constructor Tests ----------
 
     /**
@@ -78,10 +97,11 @@ public class CityTests {
     public void testParameterisedConstructorWithAllParameters()
     {
         City city = new City("Madrid", "Spain", "Madrid", 2879052);
-        assertEquals("Madrid", city.getName());
-        assertEquals("Spain", city.getCountry());
-        assertEquals("Madrid", city.getDistrict());
-        assertEquals(2879052, city.getPopulation());
+        assertTrue("Madrid".equals(city.getName()) &&
+                        "Spain".equals(city.getCountry()) &&
+                        "Madrid".equals(city.getDistrict()) &&
+                        2879052 == city.getPopulation(),
+                "All constructor parameters should be set correctly");
     }
 
     // ---------- Display Method Tests ----------
@@ -96,9 +116,7 @@ public class CityTests {
         city.displayCity();
 
         String result = output.toString();
-        assertTrue(result.contains("Madrid"),  ("Name cannot be empty"));
-        assertTrue(result.contains("Spain"),  ("Country cannot be empty"));
-        assertTrue(result.contains("Madrid"),  ("District cannot be empty"));
+        assertTrue(result.contains("Madrid") && result.contains  ("Spain") ,"Error not found");
     }
 
     /**
@@ -227,7 +245,6 @@ public class CityTests {
         City.displayListOfCity(list);
 
         String result = output.toString();
-        assertTrue(result.contains("Madrid"), ("Error message not found"));
-        assertTrue(result.contains("London"), ("Error message not found"));
+        assertTrue(result.contains("Madrid") && result.contains("London"), "Error message not found");
     }
 }

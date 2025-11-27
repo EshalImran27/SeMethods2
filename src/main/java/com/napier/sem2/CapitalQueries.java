@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 /**
  * The {@code CapitalQueries} class handles all SQL queries related to capital cities.
@@ -24,6 +26,7 @@ import java.util.List;
 public class CapitalQueries {
     /** Connection object used to communicate with the database. */
     private final Connection con;
+    private static final Logger LOGGER = Logger.getLogger(CapitalQueries.class.getName());
 
     /**
      * Constructs a new {@code CapitalQueries} instance.
@@ -66,7 +69,7 @@ public class CapitalQueries {
     private void SqlQuery(String sql) throws SQLException {
         List<City> listOfCapital = new ArrayList<>();
         if(con==null){
-            System.out.println("Database Connection is null");
+            LOGGER.warning("Database Connection is null");
 
         }else {
             try{
@@ -77,7 +80,7 @@ public class CapitalQueries {
                 stmt.close();
             }
             catch(Exception e){
-                System.out.println("SQL Exception: "+e.getMessage());
+                LOGGER.log(Level.SEVERE, "SQL Exception: ", e);
             }
             City.displayListOfCapital(listOfCapital);
         }
@@ -105,7 +108,7 @@ public class CapitalQueries {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Failed to get capitals", e);
         }
 
         return capitals;
@@ -128,7 +131,7 @@ public class CapitalQueries {
                         "FROM city " +
                         "JOIN country ON city.ID = country.Capital " +
                         "ORDER BY city.Population DESC ";
-        System.out.println("All capitals in the world ranked from largest population to smallest: ");
+        LOGGER.info("All capitals in the world ranked from largest population to smallest: ");
         SqlQuery(sqlStatement);
     }
 
@@ -160,7 +163,9 @@ public class CapitalQueries {
                 + "JOIN country ON city.ID = country.Capital "
                 + "WHERE country.Continent = '" + continent + "' "
                 + "ORDER BY city.Population DESC ";
-        System.out.println("All Capitals in " + continent + " ranked from largest population to smallest: ");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("All Capitals in " + continent + " ranked from largest population to smallest: ");
+        }
         SqlQuery(sqlStatement);
     }
 
@@ -194,7 +199,9 @@ public class CapitalQueries {
                 + "JOIN country ON city.ID = country.Capital "
                 + "WHERE country.Region = '" + region + "' "
                 + "ORDER BY city.Population DESC ";
-        System.out.println("All Capitals in the region: " + region + " ranked from largest population to smallest: ");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("All Capitals in the region: " + region + " ranked from largest population to smallest: ");
+        }
         SqlQuery(sqlStatement);
     }
 
@@ -224,7 +231,7 @@ public class CapitalQueries {
      */
     public void getReportTopCapitalGlobal(int n) throws SQLException {
         if (n <= 0) {
-            System.out.println("No capitals can be displayed");
+            LOGGER.warning("No capitals can be displayed");
             return;
         }
         String sqlStatement =  "SELECT city.Name AS city_name, country.Name AS country_name, city.Population AS population " +
@@ -232,7 +239,9 @@ public class CapitalQueries {
                 + "JOIN country ON city.ID = country.Capital "
                 + "ORDER BY city.Population DESC "
                 + "LIMIT " + n + " ";
-        System.out.println("Top " + n + " Capitals in the world ranked from largest population to smallest: ");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("Top " + n + " Capitals in the world ranked from largest population to smallest: ");
+        }
         SqlQuery(sqlStatement);
     }
 
@@ -263,7 +272,7 @@ public class CapitalQueries {
      */
     public void getReportTopCapitalContinent(String continent, int n) throws SQLException {
         if (n <= 0 || continent==null || continent.isEmpty()) {
-            System.out.println("No capitals can be displayed");
+            LOGGER.warning("No capitals can be displayed");
             return;
         }
         String sqlStatement = "SELECT city.Name AS city_name, country.Name AS country_name, city.Population AS population " +
@@ -272,7 +281,9 @@ public class CapitalQueries {
                 + "WHERE country.Continent = '" + continent + "' "
                 + "ORDER BY city.Population DESC "
                 + "LIMIT " + n + " ";
-        System.out.println("Top " + n + " Capitals in the continent " + continent + " ranked from largest population to smallest: ");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("Top " + n + " Capitals in the continent " + continent + " ranked from largest population to smallest: ");
+        }
         SqlQuery(sqlStatement);
     }
 
@@ -305,7 +316,7 @@ public class CapitalQueries {
      */
     public void getReportTopCapitalRegion(String region, int n) throws SQLException {
         if (n <= 0 || region==null) {
-            System.out.println("No capitals can be displayed");
+            LOGGER.warning("No capitals can be displayed");
             return;
         }
         String sqlStatement = "SELECT city.Name AS city_name, country.Name AS country_name, city.Population AS population " +
@@ -314,7 +325,9 @@ public class CapitalQueries {
                 + "WHERE country.Region = '" + region + "' "
                 + "ORDER BY city.Population DESC "
                 + "LIMIT " + n + " ";
-        System.out.println("Top " + n + " Capitals in the region " + region + " ranked from largest population to smallest: ");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("Top " + n + " Capitals in the region " + region + " ranked from largest population to smallest: ");
+        }
         SqlQuery(sqlStatement);
     }
 
@@ -349,7 +362,7 @@ public class CapitalQueries {
     public void outputCapitalReport(List<City> capitals, String filename) {
         // Check capitals is not null
         if (capitals == null) {
-            System.out.println("No capitals");
+            LOGGER.info("No capitals");
             return;
         }
 
@@ -367,7 +380,7 @@ public class CapitalQueries {
             writer.write(sb.toString());
             writer.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Failed to generate capital report", e);
         }
     }
 }

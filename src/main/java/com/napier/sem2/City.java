@@ -4,6 +4,8 @@ package com.napier.sem2;
 // Import SQL and utility libraries
 import java.sql.*;
 import java.util.List;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 /**
  * Represents a City or Capital entity in the world database.
@@ -11,6 +13,7 @@ import java.util.List;
  * It also provides utility methods for displaying city and capital data.
  */
 public class City {
+    private static final Logger LOGGER = Logger.getLogger(City.class.getName());
     // ==============================
     // Fields
     // ==============================
@@ -104,13 +107,12 @@ public class City {
      * Handles potential null values gracefully.
      */
     public void displayCity(){
-        System.out.printf(
-                "%-30s %-30s %-30s %10d%n",
+        String formatted = String.format( "%-30s %-30s %-30s %10d%n",
                 this.name != null ? this.name : "N/A",
                 this.country != null ? this.country : "N/A",
                 this.district != null ? this.district : "N/A",
-                this.population
-        );
+                this.population);
+        LOGGER.info(formatted);
     }
 
     /**
@@ -122,16 +124,18 @@ public class City {
     public static void displayListOfCity(List<City> listOfCity)
     {
         if (listOfCity == null || listOfCity.isEmpty()) {
-            System.out.println("No cities can be displayed");
+            LOGGER.warning("No cities can be displayed");
             return;
         }
-        System.out.println("=================================================================");
-        System.out.printf("%-30s %-30s %-30s %10s%n",
-                "Name", "Country", "District", "Population");
-        System.out.println("-----------------------------------------------------------------");
+        LOGGER.info("=================================================================");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info(String.format("%-30s %-30s %-30s %10s%n",
+                    "Name", "Country", "District", "Population"));
+        }
+        LOGGER.info("-----------------------------------------------------------------");
         for (City city : listOfCity) {
             if (city == null) {
-                System.out.println("Warning: city is null");
+                LOGGER.warning("Warning: city is null");
                 continue;
             }
             city.displayCity();
@@ -143,12 +147,13 @@ public class City {
      * Handles potential null values gracefully.
      */
     public void displayCapital(){
-        System.out.printf(
-                "%-30s %-35s %10d%n",
-                this.name != null ? this.name : "N/A",
-                this.country != null ? this.country : "N/A",
-                this.population
-        );
+        if (LOGGER.isLoggable(Level.INFO)) {
+            String formatted = String.format("%-30s %-35s %10d",
+                    this.name != null ? this.name : "N/A",
+                    this.country != null ? this.country : "N/A",
+                    this.population);
+            LOGGER.info(formatted);
+        }
     }
 
     /**
@@ -160,16 +165,17 @@ public class City {
     public static void displayListOfCapital(List<City> listOfCapital)
     {
         if (listOfCapital == null || listOfCapital.isEmpty()) {
-            System.out.println("No capitals can be displayed");
+            LOGGER.info("No capitals can be displayed");
             return;
         }
-        System.out.println("=================================================================");
-        System.out.printf("%-30s %-35s %10s%n",
-                "Name", "Country", "Population");
-        System.out.println("-----------------------------------------------------------------");
+        LOGGER.info("=================================================================");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info(String.format("%-30s %-35s %10s", "Name", "Country", "Population"));
+        }
+        LOGGER.info("-----------------------------------------------------------------");
         for (City city : listOfCapital) {
             if (city == null) {
-                System.out.println("Warning: capital is null");
+                LOGGER.info("Warning: capital is null");
                 continue;
             }
             city.displayCapital();

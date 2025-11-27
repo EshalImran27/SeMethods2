@@ -7,6 +7,7 @@ import org.junit.jupiter.api.*;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.sql.*;
+import java.util.logging.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -38,6 +39,10 @@ public class CapitalQueriesTests {
     /** Captures System.out output for verification. */
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 
+    private Handler testHandler;
+    private Logger capitalQueriesLogger;
+    private Logger cityLogger;
+
     /**
      * Sets up fresh mock objects before each test and redirects
      * {@code System.out} to a local stream for output capture.
@@ -51,7 +56,26 @@ public class CapitalQueriesTests {
         when(MockCon.createStatement()).thenReturn(mockStatement);
         when(mockStatement.executeQuery(anyString())).thenReturn(MockResultSet);
 
-        System.setOut(new PrintStream(outContent));
+
+        capitalQueriesLogger = Logger.getLogger(CapitalQueries.class.getName());
+        capitalQueriesLogger.setUseParentHandlers(false);
+
+        // Set up logger capture for City
+        cityLogger = Logger.getLogger(City.class.getName());
+        cityLogger.setUseParentHandlers(false);
+        testHandler = new StreamHandler(new PrintStream(outContent), new SimpleFormatter()) {
+            @Override
+            public synchronized void publish(LogRecord record) {
+                super.publish(record);
+                flush();
+            }
+        };
+        testHandler.setLevel(Level.ALL);
+        capitalQueriesLogger.addHandler(testHandler);
+        cityLogger.addHandler(testHandler);
+        capitalQueriesLogger.setLevel(Level.ALL);
+        cityLogger.setLevel(Level.ALL);
+
         MockCountryQueries = new CapitalQueries(MockCon);
     }
 
@@ -60,7 +84,13 @@ public class CapitalQueriesTests {
      */
     @AfterEach
     void tearDown(){
-        System.setOut(System.out);
+        if (testHandler != null) {
+            testHandler.close();
+            capitalQueriesLogger.removeHandler(testHandler);
+            cityLogger.removeHandler(testHandler);
+        }
+        capitalQueriesLogger.setUseParentHandlers(true);
+        cityLogger.setUseParentHandlers(true);
     }
 
     /**
@@ -112,8 +142,7 @@ public class CapitalQueriesTests {
         MockCountryQueries.getReportCapitalGlobal();
 
         String result = outContent.toString();
-        assertTrue(result.contains("Madrid"), "Error message not found");
-        assertTrue(result.contains("London"), "Error message not found");
+        assertTrue(result.contains("Madrid") && result.contains("London"), "Error message not found");
     }
 
     /**
@@ -151,8 +180,7 @@ public class CapitalQueriesTests {
         MockCountryQueries.getReportCapitalContinent("Europa");
 
         String result = outContent.toString();
-        assertTrue(result.contains("Madrid"), "Error message not found");
-        assertTrue(result.contains("London"), "Error message not found");
+        assertTrue(result.contains("Madrid") && result.contains("London"), "Error message not found");
     }
 
     /**
@@ -256,8 +284,7 @@ public class CapitalQueriesTests {
         MockCountryQueries.getReportTopCapitalContinent("Europe", 5);
         String result = outContent.toString();
 
-        assertTrue(result.contains("Madrid"), "Error message not found");
-        assertTrue(result.contains("London"), "Error message not found");
+        assertTrue(result.contains("Madrid") && result.contains("London"), "Error message not found");
     }
 
     /**

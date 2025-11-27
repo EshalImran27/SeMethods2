@@ -8,7 +8,7 @@ import java.io.PrintStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.logging.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CountryQueriesTests {
@@ -17,6 +17,9 @@ public class CountryQueriesTests {
     private CountryQueries MockCountryQueries;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private List<Country> mockCountry;
+    private Handler testHandler;
+    private Logger countryQueriesLogger;
+    private Logger countryLogger;
 
     @BeforeEach
     void setUp() throws SQLException {
@@ -25,14 +28,35 @@ public class CountryQueriesTests {
         MockResultSet = mock(ResultSet.class);
         when(MockCon.createStatement()).thenReturn(mockStatement);
         when(mockStatement.executeQuery(anyString())).thenReturn(MockResultSet);
-        System.setOut(new PrintStream(outContent));
+        countryQueriesLogger = Logger.getLogger(CountryQueries.class.getName());
+        countryQueriesLogger.setUseParentHandlers(false);
+        countryLogger = Logger.getLogger(Country.class.getName());
+        countryLogger.setUseParentHandlers(false);
+        testHandler = new StreamHandler(new PrintStream(outContent), new SimpleFormatter()) {
+            @Override
+            public synchronized void publish(LogRecord record) {
+                super.publish(record);
+                flush();
+            }
+        };
+        testHandler.setLevel(Level.ALL);
+        countryQueriesLogger.addHandler(testHandler);
+        countryLogger.addHandler(testHandler);
+        countryQueriesLogger.setLevel(Level.ALL);
+        countryLogger.setLevel(Level.ALL);
         MockCountryQueries = new CountryQueries(MockCon);
         mockCountry = new ArrayList<>();
     }
 
     @AfterEach
     void tearDown(){
-        System.setOut(System.out);
+        if (testHandler != null) {
+            testHandler.close();
+            countryQueriesLogger.removeHandler(testHandler);
+            countryLogger.removeHandler(testHandler);
+        }
+        countryQueriesLogger.setUseParentHandlers(true);
+        countryLogger.setUseParentHandlers(true);
     }
 
     private void setUpMockResultsWithData() throws SQLException {
@@ -76,8 +100,7 @@ public class CountryQueriesTests {
         setUpMockResultsWithData();
         mockCountry = MockCountryQueries.getCountriesByPopulationInWorld();
         String result = outContent.toString();
-        assertTrue(result.contains("China"), "Error message not found");
-        assertTrue(result.contains("India"), "Error message not found");
+        assertTrue(result.contains("China") && result.contains("India"), "Error message not found");
     }
     @Test
     public void testGetCountriesByPopulationInWorldNoData() throws SQLException {
@@ -98,8 +121,7 @@ public class CountryQueriesTests {
         setUpMockResultsWithData();
         mockCountry =MockCountryQueries.getCountriesByPopulationInContinent("Asia");
         String result = outContent.toString();
-        assertTrue(result.contains("China"), "Error message not found");
-        assertTrue(result.contains("India"), "Error message not found");
+        assertTrue(result.contains("China") && result.contains("India"), "Error message not found");
     }
     @Test
     public void testGetCountriesByPopulationInContinentWithSQLException() throws SQLException {
@@ -156,8 +178,7 @@ public class CountryQueriesTests {
         setUpMockResultsWithData();
         mockCountry =MockCountryQueries.getTopCountriesInContinent("Asia", 5);
         String result = outContent.toString();
-        assertTrue(result.contains("China"), "Error message not found");
-        assertTrue(result.contains("India"), "Error message not found");
+        assertTrue(result.contains("China") && result.contains("India"), "Error message not found");
     }
     @Test
     public void getTopCountriesInWorldWithNullContinent() throws SQLException {

@@ -4,6 +4,8 @@ package com.napier.sem2;
 // Import SQL and utility libraries
 import java.sql.*;
 import java.util.List;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 /**
  * The {@code App} class serves as the main entry point for the World Population Reporting application.
@@ -18,6 +20,7 @@ import java.util.List;
  */
 public class App
 {
+    private static final Logger LOGGER = Logger.getLogger(App.class.getName());
     /** Connection object for interfacing with the MySQL database. */
     public Connection con = null;
     /**
@@ -33,7 +36,7 @@ public class App
         }
         catch (ClassNotFoundException e){
             // Handle case where JDBC driver is not found
-            System.out.println("Could not load SQL driver");
+            LOGGER.log(Level.SEVERE, "Could not load SQL driver",e);
             System.exit(-1);
         }
         // Maximum number of connection attempts
@@ -41,7 +44,7 @@ public class App
 
         // Attempt to connect multiple times in case the database is not yet ready
         for (int i = 0; i < retries; ++i) {
-            System.out.println("Connecting to database...");
+            LOGGER.info("Connecting to database...");
             try{
                 // Wait before attempting connection (useful for slow-starting containers)
                 Thread.sleep(delay);
@@ -53,20 +56,22 @@ public class App
                         "example"
                 );
 
-                System.out.println("Successfully connected to World database!");
+                LOGGER.info("Successfully connected to World database!");
                 break;
             }
             //if connection failed print which attempt is this
             catch (SQLException sql){
                 // Handle SQL exceptions and retry
-                System.out.println("Failed to connect to database attempt " + i);
-                System.out.println(sql.getMessage());
+                if (LOGGER.isLoggable(Level.WARNING)) {
+                    LOGGER.warning("Failed to connect to database attempt " + i);
+                }
+                LOGGER.log(Level.WARNING,"SQL Exception details", sql );
             }
             //exception for interruption in the thread
             catch (InterruptedException ie){
                 // Handle unexpected thread interruption
 
-                System.out.println("Thread interrupted? Should not happen.");
+                LOGGER.log(Level.SEVERE,"Thread interrupted? Should not happen.", ie);
             }
         }
     }
@@ -80,12 +85,12 @@ public class App
             try {
                 // Safely close the connection
                 con.close();
-                System.out.println("Database connection closed.");
+                LOGGER.info("Database connection closed.");
             }
             //exception if there is a problem in closing the database
             catch (Exception e){
                 // Handle any issues during disconnection
-                System.out.println("Error closing connection to database");
+                LOGGER.log(Level.SEVERE, "Error closing connection to database", e);
             }
         }
     }
@@ -124,8 +129,9 @@ public class App
             WorldReport.connect(args[0], Integer.parseInt(args[1]));
         }
 
-        System.out.println("Welcome to World Report!");
+        LOGGER.info("Welcome to World Report!");
 
+        LOGGER.info("Starting SQL queries:");
         // ===== Country Queries =====
         CountryQueries countries = new CountryQueries(WorldReport.con);
         countries.getCountriesByPopulationInWorld();

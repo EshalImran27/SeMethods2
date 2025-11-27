@@ -7,6 +7,7 @@ import java.io.PrintStream;
 import java.sql.*;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.logging.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -14,6 +15,8 @@ public class CountryTests
 {
     static Country country;
     private final ByteArrayOutputStream output = new ByteArrayOutputStream();
+    private Handler testHandler;
+    private Logger countryLogger;
 
     @BeforeAll
     static void init()
@@ -23,11 +26,30 @@ public class CountryTests
 
     @BeforeEach
     void setUpOutput(){
-        System.setOut(new PrintStream(output));
+        countryLogger = Logger.getLogger(Country.class.getName());
+        countryLogger.setUseParentHandlers(false); // Remove default handlers
+
+        testHandler = new StreamHandler(new PrintStream(output), new SimpleFormatter()) {
+            @Override
+            public synchronized void publish(LogRecord record) {
+                super.publish(record);
+                flush(); // Ensure the message is written to the stream
+            }
+        };
+        testHandler.setLevel(Level.ALL);
+        countryLogger.addHandler(testHandler);
+        countryLogger.setLevel(Level.ALL);
+
+
     }
     @AfterEach
     void resetOutput(){
-        System.setOut(System.out);
+        if (testHandler != null) {
+            countryLogger.removeHandler(testHandler);
+            testHandler.close();
+        }
+        // Restore default logging behavior
+        countryLogger.setUseParentHandlers(true);
     }
 
     @Test
@@ -40,11 +62,14 @@ public class CountryTests
     public void testParameterisedConstructorWithAllParameters()
     {
         Country country = new Country("FRA", "France", "Europe", "Western Europe", 1234 , 22903129);
-        assertEquals("FRA", country.getCode());
-        assertEquals("France", country.getName());
-        assertEquals("Europe", country.getContinent());
-        assertEquals("Western Europe", country.getRegion());
-        assertEquals(22903129, country.getPopulation());
+        boolean allAssertionsPass = "FRA".equals(country.getCode()) &&
+                "France".equals(country.getName()) &&
+                "Europe".equals(country.getContinent()) &&
+                "Western Europe".equals(country.getRegion()) &&
+                1234 == country.getCapital() &&
+                22903129 == country.getPopulation();
+
+        assertTrue(allAssertionsPass, "All constructor parameters should be set correctly");
     }
     //1.ALL POPULATED VALUES
     @Test
@@ -52,10 +77,7 @@ public class CountryTests
         Country country = new Country("FRA", "France", "Europe", "Western Europe", 1233, 22903129);
         country.display();
         String result = output.toString();
-        assertTrue(result.contains("France"),  ("Name cannot be empty"));
-        assertTrue(result.contains("Europe"),  ("Continent cannot be empty"));
-        assertTrue(result.contains("FRA"),  ("code cannot be empty"));
-        assertTrue(result.contains("Western Europe"),  ("region cannot be empty"));
+        assertTrue(result.contains("France")&& result.contains ("Europe") && result.contains ("FRA") && result.contains ("Western Europe") , "Country must be populated correctly");
     }
     @Test
     public void printDisplayWithNullCode(){
@@ -145,7 +167,8 @@ public class CountryTests
         list.add(germany);
         Country.displayCountries(list);
         String result = output.toString();
-        assertTrue(result.contains("France"), ("Error message not found"));
-        assertTrue(result.contains("Germany"), ("Error message not found"));
+        assertTrue(result.contains("France") && result.contains("Germany"),
+                "Both country names should be found in output");
+
     }
 }

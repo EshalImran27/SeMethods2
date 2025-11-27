@@ -7,10 +7,13 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 public class CityQueries {
     /** Connection object used to communicate with the database. */
     private final Connection con;
+    private static final Logger LOGGER = Logger.getLogger(CityQueries.class.getName());
 
     /**
      * Constructs a new {@code CityQueries} instance.
@@ -54,7 +57,7 @@ public class CityQueries {
     private void SqlQuery(String sql) throws SQLException {
         List<City> listOfCities = new ArrayList<>();
         if(con==null){
-            System.out.println("Database Connection is null");
+            LOGGER.info("Database Connection is null");
 
         }else {
             try{
@@ -65,7 +68,7 @@ public class CityQueries {
                 stmt.close();
             }
             catch(Exception e){
-                System.out.println("SQL Exception: "+e.getMessage());
+                LOGGER.log(Level.SEVERE, "SQL Exception: ", e);
             }
             City.displayListOfCity(listOfCities);
         }
@@ -94,7 +97,7 @@ public class CityQueries {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Failed to get cities", e);
         }
 
         return cities;
@@ -118,7 +121,7 @@ public class CityQueries {
                         "FROM city " +
                         "JOIN country ON city.CountryCode = country.Code " +
                         "ORDER BY city.Population DESC ";
-        System.out.println("All cities in the world ranked from largest population to smallest: ");
+        LOGGER.info("All cities in the world ranked from largest population to smallest: ");
         SqlQuery(sqlStatement);
     }
 
@@ -152,7 +155,9 @@ public class CityQueries {
                 "JOIN country ON city.CountryCode = country.Code " +
                 "WHERE country.Continent = '" + continent + "' " +
                 "ORDER BY city.Population DESC ";
-        System.out.println("All Cities in " + continent + " ranked from largest population to smallest: ");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("All Cities in " + continent + " ranked from largest population to smallest: ");
+        }
         SqlQuery(sqlStatement);
     }
 
@@ -188,7 +193,9 @@ public class CityQueries {
                 "JOIN country ON city.CountryCode = country.Code " +
                 "WHERE country.Region = '" + region + "' " +
                 "ORDER BY city.Population DESC ";
-        System.out.println("All cities in the region: " + region + " ranked from largest population to smallest: ");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("All cities in the region: " + region + " ranked from largest population to smallest: ");
+        }
         SqlQuery(sqlStatement);
     }
 
@@ -224,7 +231,9 @@ public class CityQueries {
                 "JOIN country ON city.CountryCode = country.Code " +
                 "WHERE country.Name = '" + country + "' " +
                 "ORDER BY city.Population DESC ";
-        System.out.println("All cities in the country: " + country + " ranked from largest population to smallest: ");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("All cities in the country: " + country + " ranked from largest population to smallest: ");
+        }
         SqlQuery(sqlStatement);
     }
 
@@ -260,7 +269,9 @@ public class CityQueries {
                 "JOIN country ON city.CountryCode = country.Code " +
                 "WHERE city.District = '" + district + "' " +
                 "ORDER BY city.Population DESC ";
-        System.out.println("All cities in the district: " + district + " ranked from largest population to smallest: ");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("All cities in the district: " + district + " ranked from largest population to smallest: ");
+        }
         SqlQuery(sqlStatement);
     }
 
@@ -291,7 +302,7 @@ public class CityQueries {
      */
     public void getReportTopCityGlobal(int n) throws SQLException {
         if (n <= 0) {
-            System.out.println("No cities can be displayed");
+            LOGGER.warning("No cities can be displayed");
             return;
         }
         String sqlStatement =  "SELECT city.Name AS city_name, country.Name AS country_name, city.District as city_district, " +
@@ -300,7 +311,9 @@ public class CityQueries {
                 "JOIN country ON city.CountryCode = country.Code " +
                 "ORDER BY city.Population DESC " +
                 "LIMIT " + n + " ";
-        System.out.println("Top " + n + " Cities in the world ranked from largest population to smallest: ");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("Top " + n + " Cities in the world ranked from largest population to smallest: ");
+        }
         SqlQuery(sqlStatement);
     }
 
@@ -332,7 +345,7 @@ public class CityQueries {
      */
     public void getReportTopCityContinent(String continent, int n) throws SQLException {
         if (n <= 0 || continent==null || continent.isEmpty()) {
-            System.out.println("No cities can be displayed");
+            LOGGER.warning("No cities can be displayed");
             return;
         }
         String sqlStatement = "SELECT city.Name AS city_name, country.Name AS country_name, " +
@@ -342,7 +355,9 @@ public class CityQueries {
                 "WHERE country.Continent = '" + continent + "' " +
                 "ORDER BY city.Population DESC " +
                 "LIMIT " + n + " ";
-        System.out.println("Top " + n + " Cities in the continent " + continent + " ranked from largest population to smallest: ");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("Top " + n + " Cities in the continent " + continent + " ranked from largest population to smallest: ");
+        }
         SqlQuery(sqlStatement);
     }
 
@@ -376,7 +391,7 @@ public class CityQueries {
      */
     public void getReportTopCityRegion(String region, int n) throws SQLException {
         if (n <= 0 || region==null) {
-            System.out.println("No cities can be displayed");
+            LOGGER.warning("No cities can be displayed");
             return;
         }
         String sqlStatement = "SELECT city.Name AS city_name, country.Name AS country_name, " +
@@ -386,7 +401,9 @@ public class CityQueries {
                 "WHERE country.Region = '" + region + "' " +
                 "ORDER BY city.Population DESC " +
                 "LIMIT " + n + " ";
-        System.out.println("Top " + n + " Cities in the region " + region + " ranked from largest population to smallest: ");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("Top " + n + " Cities in the region " + region + " ranked from largest population to smallest: ");
+        }
         SqlQuery(sqlStatement);
     }
 
@@ -420,7 +437,7 @@ public class CityQueries {
      */
     public void getReportTopCityCountry(String country, int n) throws SQLException {
         if (n <= 0 || country==null) {
-            System.out.println("No cities can be displayed");
+            LOGGER.warning("No cities can be displayed");
             return;
         }
         String sqlStatement = "SELECT city.Name AS city_name, country.Name AS country_name, " +
@@ -430,7 +447,9 @@ public class CityQueries {
                 "WHERE country.Name = '" + country + "' " +
                 "ORDER BY city.Population DESC " +
                 "LIMIT " + n + " ";
-        System.out.println("Top " + n + " Cities in the country " + country + " ranked from largest population to smallest: ");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("Top " + n + " Cities in the country " + country + " ranked from largest population to smallest: ");
+        }
         SqlQuery(sqlStatement);
     }
 
@@ -464,7 +483,7 @@ public class CityQueries {
      */
     public void getReportTopCityDistrict(String district, int n) throws SQLException {
         if (n <= 0 || district==null) {
-            System.out.println("No cities can be displayed");
+            LOGGER.warning("No cities can be displayed");
             return;
         }
         String sqlStatement = "SELECT city.Name AS city_name, country.Name AS country_name, " +
@@ -474,7 +493,9 @@ public class CityQueries {
                 "WHERE city.District = '" + district + "' " +
                 "ORDER BY city.Population DESC " +
                 "LIMIT " + n + " ";
-        System.out.println("Top " + n + " Cities in the district " + district + " ranked from largest population to smallest: ");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("Top " + n + " Cities in the district " + district + " ranked from largest population to smallest: ");
+        }
         SqlQuery(sqlStatement);
     }
 
@@ -510,7 +531,7 @@ public class CityQueries {
     public void outputCityReport(List<City> listOfCities, String filename) {
         // Check cities is not null
         if (listOfCities == null) {
-            System.out.println("No cities");
+            LOGGER.info("No cities");
             return;
         }
 
@@ -529,7 +550,7 @@ public class CityQueries {
             writer.write(sb.toString());
             writer.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Failed to connect to database", e);
         }
     }
 }
