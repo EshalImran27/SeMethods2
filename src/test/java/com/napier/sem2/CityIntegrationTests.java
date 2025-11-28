@@ -200,4 +200,45 @@ public class CityIntegrationTests {
         assertEquals("Madrid", cities.get(3).getDistrict());
         assertEquals(171173, cities.get(3).getPopulation());
     }
+    @Test
+    void testOutputCityReportGlobal() throws SQLException {
+        List<City> report = cityQueries.getReportCityGlobalList();
+        assertDoesNotThrow(() -> cityQueries.outputCityReport(report, "City Global Report"));
+    }
+    @Test
+    void testOutputCityReportContinent() throws SQLException {
+        List<City> report = cityQueries.getReportCityContinentList("Asia");
+        assertDoesNotThrow(() -> cityQueries.outputCityReport(report, "City Continent Report"));
+    }
+    @Test
+    void testOutputCityReportRegion() throws SQLException {
+        List<City> report = cityQueries.getReportCityRegionList("Caribbean");
+        assertDoesNotThrow(() -> cityQueries.outputCityReport(report, "City Region Report"));
+    }
+    @Test
+    void testOutputCityReportCountry() throws SQLException {
+        List<City> report = cityQueries.getReportCityCountryList("Spain");
+        assertDoesNotThrow(() -> cityQueries.outputCityReport(report, "City Country Report"));
+    }
+    @Test
+    void testOutputCityReportDistrict() throws SQLException {
+        List<City> report = cityQueries.getReportCityDistrictList("Madrid");
+        assertDoesNotThrow(() -> cityQueries.outputCityReport(report, "City District Report"));
+    }
+    @Test
+    void testOutputCityReportTopGlobal() throws SQLException {
+        List<City> report = cityQueries.getReportTopCityGlobalList(5);
+        assertDoesNotThrow(() -> cityQueries.outputCityReport(report, "City Top Report"));
+    }
+    @Test
+    void testOutputCityReportTopContinent() throws SQLException {
+        List<City> report = cityQueries.getReportTopCityContinentList("Asia", 5);
+        assertDoesNotThrow(() -> cityQueries.outputCityReport(report, "City Top Continent Report"));
+    }
+    @Test
+    void testOutputCityReportTopRegion() throws SQLException {
+        List<City> report = cityQueries.getReportTopCityRegionList("Caribbean", 5);
+        assertDoesNotThrow(() -> cityQueries.outputCityReport(report, "City Top Region Report"));
+    }
+
 }

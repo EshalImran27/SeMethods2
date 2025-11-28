@@ -180,5 +180,41 @@ public class CountryQueriesTests {
         String result = outContent.toString();
         assertTrue(result.contains("No countries can be displayed"), "Error message not found");
     }
+    // ===== Test outputCountryReport =====
+    @Test
+    void testOutputCountryReport_WithData() {
+        ArrayList<Country> countries = new ArrayList<>();
+        Country country = new Country();
+        country.setCode("USA");
+        country.setName("United States");
+        country.setContinent("North America");
+        country.setRegion("North America");
+        country.setPopulation(331000000);
+        country.setCapital(12345);
+        countries.add(country);
+
+        // Execute - this will print to console
+        // You might want to capture System.out to verify output
+        assertDoesNotThrow(() ->
+                MockCountryQueries.outputCountryReport(countries, "Test Report")
+        );
+    }
+    @Test
+    void testOutputCountryReport_EmptyList() {
+        // Execute with empty list
+        ArrayList<Country> emptyList = new ArrayList<>();
+
+        assertDoesNotThrow(() ->
+                MockCountryQueries.outputCountryReport(emptyList, "Empty Report")
+        );
+    }
+
+    @Test
+    void testOutputCountryReport_NullList() {
+        // Execute with null - should handle gracefully
+        assertDoesNotThrow(() ->
+                MockCountryQueries.outputCountryReport(null, "Null Report")
+        );
+    }
 
 }
