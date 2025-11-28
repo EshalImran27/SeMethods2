@@ -38,7 +38,7 @@ public class CapitalIntegrationTests
     static void init()
     {
         app = new App();
-        app.connect("localhost:33060", 5000);
+        app.connect("localhost:33060", 30000);
         capitalQueries = new CapitalQueries(app.con);
     }
 
