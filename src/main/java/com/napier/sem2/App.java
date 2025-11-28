@@ -108,7 +108,7 @@ public class App
      *             </ul>
      * @throws SQLException If a database access error occurs.
      */
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws Exception {
 
         // Create application instance
         App WorldReport = new App();
@@ -244,35 +244,19 @@ public class App
         // ===== Population Queries =====
         System.out.println("\n========== POPULATION QUERIES ==========\n");
 
-        PopulationQueries popQueries = new PopulationQueries(WorldReport.con);
+        // ===== Population Queries =====
+        PopulationQueries populationQueries = new PopulationQueries(WorldReport.con);
 
-// Basic population queries
-        popQueries.getWorldPopulation();
+        populationQueries.getWorldPopulation();
+        populationQueries.getContinentPopulation("Europe");
+        populationQueries.getRegionPopulation("Caribbean");
+        populationQueries.getCountryPopulation("Spain");
+        populationQueries.getDistrictPopulation("Córdoba");
+        populationQueries.getCityPopulation("Madrid");
 
-        try {
-            popQueries.getContinentPopulation("Asia");
-            popQueries.getContinentPopulation("Europe");
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
-        }
-
-        popQueries.getRegionPopulation("Caribbean");
-        popQueries.getRegionPopulation("Western Europe");
-
-// Capital city population queries
-        System.out.println("\n========== CAPITAL CITY POPULATION QUERIES ==========\n");
-        popQueries.getAllCapitalsInWorld();
-        popQueries.getAllCapitalsInContinent("Europe");
-        popQueries.getAllCapitalsInRegion("Caribbean");
-        popQueries.getTopCapitalsInWorld(10);
-        popQueries.getTopCapitalsInContinent("Asia", 5);
-        popQueries.getTopCapitalsInRegion("Western Europe", 3);
-
-// Population distribution queries
-        System.out.println("\n========== POPULATION DISTRIBUTION QUERIES ==========\n");
-        popQueries.getPopulationDistributionByContinent();
-        popQueries.getPopulationDistributionByRegion();
-        popQueries.getPopulationDistributionByCountry();
+        populationQueries.getPopulationDistributionByContinent();
+        populationQueries.getPopulationDistributionByRegion();
+        populationQueries.getPopulationDistributionByCountry();
 
         System.out.println("\n========== ALL QUERIES COMPLETED ==========\n");
 // Disconnect from database
