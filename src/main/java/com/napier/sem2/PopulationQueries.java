@@ -243,7 +243,8 @@ public class PopulationQueries {
      * 3. Calculate rural population as (total - city population)
      * 4. Calculate percentages
      */
-    public void getPopulationDistributionByContinent() {
+    public List<Population> getPopulationDistributionByContinent() {
+        List<Population> populationList = new ArrayList<>();
         try {
             // SQL query to calculate population distribution by continent
             // Uses LEFT JOIN to include countries even if they have no cities in the database
@@ -282,28 +283,30 @@ public class PopulationQueries {
                 double cityPercent = (totalPop > 0) ? (cityPop * 100.0 / totalPop) : 0;
                 double ruralPercent = (totalPop > 0) ? (ruralPop * 100.0 / totalPop) : 0;
 
+                populationList.add(new Population(name,totalPop,cityPop, cityPercent, ruralPop, ruralPercent));
                 // Display formatted results
                 System.out.println(String.format("%-13s %,15d %,15d %9.2f%% %,15d %9.2f%%",
                         name, totalPop, cityPop, cityPercent, ruralPop, ruralPercent));
             }
-
         } catch (SQLException e) {
             System.out.println("SQL Exception: " + e.getMessage());
             System.out.println("Failed to get population distribution by continent");
         }
+        return populationList;
     }
 
     /**
      * Shows population distribution (total, in cities, not in cities) for each region.
      */
-    public void getPopulationDistributionByRegion() {
+    public List<Population> getPopulationDistributionByRegion() {
+        List<Population> populationList = new ArrayList<>();
         try {
             // SQL query to calculate population distribution by region
             String query =
                     "SELECT " +
                             "    country.Region AS name, " +
                             "    SUM(country.Population) AS total_population, " +
-                            "    (city_pop.city_population) AS city_population " +
+                            "    SUM(city_pop.city_population) AS city_population " +
                             "FROM country " +
                             "LEFT JOIN ( " +
                             "    SELECT CountryCode, SUM(Population) AS city_population " +
@@ -334,6 +337,7 @@ public class PopulationQueries {
                 double cityPercent = (totalPop > 0) ? (cityPop * 100.0 / totalPop) : 0;
                 double ruralPercent = (totalPop > 0) ? (ruralPop * 100.0 / totalPop) : 0;
 
+                populationList.add(new Population(name,totalPop,cityPop, cityPercent, ruralPop, ruralPercent));
                 // Display formatted results
                 System.out.println(String.format("%-30s %,15d %,15d %9.2f%% %,15d %9.2f%%",
                         name, totalPop, cityPop, cityPercent, ruralPop, ruralPercent));
@@ -343,13 +347,15 @@ public class PopulationQueries {
             System.out.println("SQL Exception: " + e.getMessage());
             System.out.println("Failed to get population distribution by region");
         }
+        return populationList;
     }
 
     /**
      * Shows population distribution (total, in cities, not in cities) for each country.
      * Limited to top 20 countries for readability.
      */
-    public void getPopulationDistributionByCountry() {
+    public  List<Population> getPopulationDistributionByCountry() {
+        List<Population> populationList = new ArrayList<>();
         try {
             // SQL query to calculate population distribution by country
             String query =
@@ -387,6 +393,7 @@ public class PopulationQueries {
                 double cityPercent = (totalPop > 0) ? (cityPop * 100.0 / totalPop) : 0;
                 double ruralPercent = (totalPop > 0) ? (ruralPop * 100.0 / totalPop) : 0;
 
+                populationList.add(new Population(name,totalPop,cityPop, cityPercent, ruralPop, ruralPercent));
                 // Display formatted results
                 System.out.println(String.format("%-30s %,15d %,15d %9.2f%% %,15d %9.2f%%",
                         name, totalPop, cityPop, cityPercent, ruralPop, ruralPercent));
@@ -396,17 +403,13 @@ public class PopulationQueries {
             System.out.println("SQL Exception: " + e.getMessage());
             System.out.println("Failed to get population distribution by country");
         }
+        return populationList;
     }
 
     // ============================================================
     //                  REPORT OUTPUT METHODS
     // ============================================================
 
-    /**
-     * Outputs a list of capital cities to a Markdown (.md) report file.
-     * @param population Represent the total population
-     * @param filename The output filename (without extension).
-     */
     public void outputPopulationGlobalReport(long population, String filename) {
         StringBuilder sb = new StringBuilder();
         // Print header
@@ -421,11 +424,6 @@ public class PopulationQueries {
         }
     }
 
-    /**
-     * Outputs a list of capital cities to a Markdown (.md) report file.
-     * @param population Represent the total population
-     * @param filename The output filename (without extension).
-     */
     public void outputPopulationContinentReport(long population, String continent, String filename) {
         StringBuilder sb = new StringBuilder();
         // Print header
@@ -440,11 +438,6 @@ public class PopulationQueries {
         }
     }
 
-    /**
-     * Outputs a list of capital cities to a Markdown (.md) report file.
-     * @param population Represent the total population
-     * @param filename The output filename (without extension).
-     */
     public void outputPopulationRegionReport(long population, String region, String filename) {
         StringBuilder sb = new StringBuilder();
         // Print header
@@ -459,11 +452,6 @@ public class PopulationQueries {
         }
     }
 
-    /**
-     * Outputs a list of capital cities to a Markdown (.md) report file.
-     * @param population Represent the total population
-     * @param filename The output filename (without extension).
-     */
     public void outputPopulationCountryReport(long population, String country, String filename) {
         StringBuilder sb = new StringBuilder();
         // Print header
@@ -478,11 +466,6 @@ public class PopulationQueries {
         }
     }
 
-    /**
-     * Outputs a list of capital cities to a Markdown (.md) report file.
-     * @param population Represent the total population
-     * @param filename The output filename (without extension).
-     */
     public void outputPopulationDistrictReport(long population, String district, String filename) {
         StringBuilder sb = new StringBuilder();
         // Print header
@@ -497,15 +480,38 @@ public class PopulationQueries {
         }
     }
 
-    /**
-     * Outputs a list of capital cities to a Markdown (.md) report file.
-     * @param population Represent the total population
-     * @param filename The output filename (without extension).
-     */
     public void outputPopulationCityReport(long population, String city, String filename) {
         StringBuilder sb = new StringBuilder();
         // Print header
         sb.append("Total Population of the City of " + city + ": " + population + "\r\n");
+        try {
+            new File("./reports/").mkdir();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(new File("./reports/" + filename + ".md")));
+            writer.write(sb.toString());
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void outputPopulationDistributionReport(List<Population> populationList, String filename) {
+        // Check capitals is not null
+        if (populationList == null) {
+            System.out.println("No population distribution found");
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        // Print header
+        sb.append("| Name | Total Pop | City Pop | City Perc | Rural Pop | Rural Perc |\n");
+        // Loop over all capitals in the list
+        for (Population population : populationList) {
+            if (population == null) continue;
+            sb.append("| " + population.getName() + " | " + population.getTotalPop() + " | " + population.getCityPop()
+                    + " | " +  Math.round(population.getCityPercentage() * 100.0) / 100.0 + "% | " + population.getRuralPop() +
+                    " | " + Math.round(population.getRuralPercentage() * 100.0) / 100.0 + "% |\r\n");
+
+        }
         try {
             new File("./reports/").mkdir();
             BufferedWriter writer = new BufferedWriter(new FileWriter(new File("./reports/" + filename + ".md")));

@@ -115,6 +115,7 @@ public class App
 
         List <City> report;
         List <Country> countryReport;
+        List <Population> populationReport;
 
         // Connect to the database (use default if no arguments provided)
         if(args.length < 1){
@@ -285,6 +286,15 @@ public class App
 
         population = popQueries.getCityPopulation("Madrid");
         popQueries.outputPopulationCityReport(population, "Madrid","Population City Report");
+
+        populationReport = popQueries.getPopulationDistributionByContinent();
+        popQueries.outputPopulationDistributionReport(populationReport, "Population Distribution Continent Report");
+
+        populationReport = popQueries.getPopulationDistributionByRegion();
+        popQueries.outputPopulationDistributionReport(populationReport, "Population Distribution Region Report");
+
+        populationReport = popQueries.getPopulationDistributionByCountry();
+        popQueries.outputPopulationDistributionReport(populationReport, "Population Distribution Country Report");
 
         // Disconnect from database
         WorldReport.disconnect();}
