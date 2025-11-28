@@ -20,7 +20,6 @@ public class App
 {
     /** Connection object for interfacing with the MySQL database. */
     public Connection con = null;
-
     /**
      * Establishes a connection to the MySQL database.
      *
@@ -58,10 +57,14 @@ public class App
                 break;
             }
             catch (SQLException sql){
+                // Handle SQL exceptions and retry
                 System.out.println("Failed to connect to database attempt " + i);
                 System.out.println(sql.getMessage());
             }
+            //exception for interruption in the thread
             catch (InterruptedException ie){
+                // Handle unexpected thread interruption
+
                 System.out.println("Thread interrupted? Should not happen.");
             }
         }
@@ -69,14 +72,18 @@ public class App
 
     /**
      * Closes the connection to the MySQL database, if active.
+     * Ensures safe termination of the connection to avoid resource leaks.
      */
     public void disconnect() {
         if (con != null) {
             try {
+                // Safely close the connection
                 con.close();
                 System.out.println("Database connection closed.");
             }
+            //exception if there is a problem in closing the database
             catch (Exception e){
+                // Handle any issues during disconnection
                 System.out.println("Error closing connection to database");
             }
         }
@@ -84,14 +91,31 @@ public class App
 
     /**
      * The main entry point for the application.
+     * <p>
+     * This method:
+     * <ul>
+     *     <li>Initializes the database connection</li>
+     *     <li>Executes country and capital population queries</li>
+     *     <li>Outputs ranking and report data</li>
+     *     <li>Terminates the database connection upon completion</li>
+     * </ul>
+     * </p>
+     *
+     * @param args Command-line arguments:
+     *             <ul>
+     *                 <li>args[0] - Database location (optional)</li>
+     *                 <li>args[1] - Connection delay (optional)</li>
+     *             </ul>
+     * @throws SQLException If a database access error occurs.
      */
     public static void main(String[] args) throws SQLException {
 
         // Create application instance
         App WorldReport = new App();
+
         List <City> report;
 
-        // Connect to the database
+        // Connect to the database (use default if no arguments provided)
         if(args.length < 1){
             WorldReport.connect("localhost:33060", 30000);
         }else{
@@ -112,6 +136,8 @@ public class App
         // ===== Capital Queries =====
         CapitalQueries queryCapital = new CapitalQueries(WorldReport.con);
 
+
+        // Retrieve various capital city reports
         queryCapital.getReportCapitalGlobal();
         queryCapital.getReportCapitalContinent("Asia");
         queryCapital.getReportCapitalRegion("Caribbean");
@@ -119,7 +145,7 @@ public class App
         queryCapital.getReportTopCapitalContinent("Asia",5);
         queryCapital.getReportTopCapitalRegion("Caribbean",5);
 
-        // ===== Capital Report Output =====
+        // ===== Report Output =====
         report = queryCapital.getReportCapitalGlobalList();
         queryCapital.outputCapitalReport(report, "Capital Global Report");
 
@@ -152,7 +178,8 @@ public class App
         queryCity.getReportTopCityCountry("Spain", 5);
         queryCity.getReportTopCityDistrict("Madrid", 5);
 
-        // ===== City Report Output =====
+
+        // ===== Report Output =====
         report = queryCity.getReportCityGlobalList();
         queryCity.outputCityReport(report, "City Global Report");
 
@@ -219,5 +246,6 @@ public class App
         System.out.println("\n========== ALL QUERIES COMPLETED ==========\n");
 // Disconnect from database
         WorldReport.disconnect();}
+
 }
 

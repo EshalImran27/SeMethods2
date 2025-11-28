@@ -1,12 +1,14 @@
-// Package declaration
-package com.napier.sem2;
+ package com.napier.sem2;
 
-// Import SQL, JUnit and utility libraries
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.*;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.sql.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -22,6 +24,21 @@ import static org.mockito.Mockito.*;
  * <p><b>Test Strategy:</b></p>
  * <ul>
  *     <li>Mock {@link Connection}, {@link Statement}, {@link PreparedStatement}, and {@link ResultSet} objects.</li>
+ *     <li>Capture console output via {@link ByteArrayOutputStream} for validation.</li>
+ *     <li>Verify proper handling of normal data, null connections, and SQL exceptions.</li>
+ * </ul>
+ */
+/**
+ * Unit test suite for the {@link PopulationQueries} class.
+ * <p>
+ * These tests use Mockito to simulate database behavior, ensuring that
+ * the query methods respond correctly to expected, empty, and exceptional
+ * result sets — without requiring a real database connection.
+ * </p>
+ *
+ * <p><b>Test Strategy:</b></p>
+ * <ul>
+ *     <li>Mock {@link Connection}, {@link Statement}, and {@link ResultSet} objects.</li>
  *     <li>Capture console output via {@link ByteArrayOutputStream} for validation.</li>
  *     <li>Verify proper handling of normal data, null connections, and SQL exceptions.</li>
  * </ul>
