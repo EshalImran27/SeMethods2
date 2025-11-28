@@ -1,6 +1,6 @@
 # MeGroup2
 
-This is our beginning of coursework for Group2 where we are just working on initial set up and printing hello world
+This is our beginning of coursework for Group2 where we are just working on initial set up and printing hello world.
 
 ## Requirements
 
@@ -9,10 +9,10 @@ This is our beginning of coursework for Group2 where we are just working on init
 - Docker
 
 ## Authors
-Austin
+Kaung Khant Kyaw
 Eshal
 Lewis
-Pablo
+Pablo Ramallo Amador
 ## Badges
 ![workflow](https://github.com/EshalImran27/SeMethods2/actions/workflows/main.yml/badge.svg)
 

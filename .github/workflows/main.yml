@@ -16,7 +16,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
       - name: Unit Tests
-        run: mvn -Dtest=CapitalTests,CountryTests,CountryQeuriesTests,CapitalQueriesTests test
+        run: mvn -Dtest=CapitalTests,CountryTests,CountryQeuriesTests,CapitalQueriesTests,CityTests,CityQueriesTets test
   IntegrationTests:
       name: Integration Tests
       runs-on: ubuntu-22.04
@@ -39,12 +39,11 @@ jobs:
             docker rm employees
             docker image rm database
         - name: CodeCov
-          uses: codecov/codecov-action@v2
+          uses: codecov/codecov-action@v5
           with:
-              # token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-              directory: ./target/site/jacoco
-              flags: Integration Tests # optional
-              verbose: true # optional (default = false)
+              token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+              slug: EshalImran27/SeMethods2
+              
   build:
     name: Build and Start Using docker-compose
     runs-on: ubuntu-22.04
@@ -62,3 +61,17 @@ jobs:
         run: |
           mvn package -DskipTests
           docker compose up --abort-on-container-exit
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          automatic_release_tag: "latest"
+          files: |
+           ./target/*.jar
+      - name: Copy Output
+        run: docker container cp semethods2-app-1:./tmp/reports ./
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4.2.5
+        with:
+            branch: reports-branch # The branch the action should deploy to.
+            folder: reports # The folder we are copying
