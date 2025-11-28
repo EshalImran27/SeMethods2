@@ -1,6 +1,6 @@
-# MeGroup2
+# SeMethods2
 
-This is our beginning of coursework for Group2 where we are just working on initial set up and printing hello world.
+This is world report generated for World Pop Organisation. It generates a report of All the population in the whole world distributed by Country, Continent, city, district etc.
 
 ## Requirements
 
