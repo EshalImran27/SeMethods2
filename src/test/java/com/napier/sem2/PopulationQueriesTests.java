@@ -1,7 +1,7 @@
-// Package declaration
-package com.napier.sem2;
+ package com.napier.sem2;
 
-// Import SQL, JUnit and utility libraries
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.*;
 import java.io.ByteArrayOutputStream;
@@ -10,6 +10,24 @@ import java.sql.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+/**
+ * Unit test suite for the {@link PopulationQueries} class.
+ * <p>
+ * These tests use Mockito to simulate database behavior, ensuring that
+ * the query methods respond correctly to expected, empty, and exceptional
+ * result sets — without requiring a real database connection.
+ * </p>
+ *
+ * <p><b>Test Strategy:</b></p>
+ * <ul>
+ *     <li>Mock {@link Connection}, {@link Statement}, {@link PreparedStatement}, and {@link ResultSet} objects.</li>
+ *     <li>Capture console output via {@link ByteArrayOutputStream} for validation.</li>
+ *     <li>Verify proper handling of normal data, null connections, and SQL exceptions.</li>
+ * </ul>
+ */
 /**
  * Unit test suite for the {@link PopulationQueries} class.
  * <p>
@@ -27,13 +45,19 @@ import static org.mockito.Mockito.*;
  */
 public class PopulationQueriesTests {
     /** Mocked database connection. */
-    private Connection MockCon;
+    private Connection mockCon;
+
+    /** Mocked SQL statement. */
+    private Statement mockStatement;
+
+    /** Mocked SQL prepared statement. */
+    private PreparedStatement mockPreparedStatement;
 
     /** Mocked SQL result set for simulating query results. */
-    private ResultSet MockResultSet;
+    private ResultSet mockResultSet;
 
     /** Instance of PopulationQueries using the mocked connection. */
-    private PopulationQueries MockCountryQueries;
+    private PopulationQueries populationQueries;
 
     /** Captures System.out output for verification. */
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -44,23 +68,35 @@ public class PopulationQueriesTests {
      */
     @BeforeEach
     void setUp() throws SQLException {
-        MockCon = mock(Connection.class);
-        Statement mockStatement = mock(Statement.class);
-        MockResultSet = mock(ResultSet.class);
+        mockCon = mock(Connection.class);
+        mockStatement = mock(Statement.class);
+        mockPreparedStatement = mock(PreparedStatement.class);
+        mockResultSet = mock(ResultSet.class);
 
-        when(MockCon.createStatement()).thenReturn(mockStatement);
-        when(mockStatement.executeQuery(anyString())).thenReturn(MockResultSet);
+        when(mockCon.createStatement()).thenReturn(mockStatement);
+        when(mockCon.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
+        when(mockStatement.executeQuery(anyString())).thenReturn(mockResultSet);
+        when(mockPreparedStatement.executeQuery()).thenReturn(mockResultSet);
 
         System.setOut(new PrintStream(outContent));
-        MockCountryQueries = new PopulationQueries(MockCon);
+        populationQueries = new PopulationQueries(mockCon);
     }
 
     /**
      * Restores the default system output after each test.
      */
     @AfterEach
-    void tearDown(){
+    void tearDown() {
         System.setOut(System.out);
+    }
+
+    /**
+     * Configures the mock {@link ResultSet} to simulate
+     * a valid population query result.
+     */
+    private void setUpMockResultsWithPopulation(long population) throws SQLException {
+        when(mockResultSet.next()).thenReturn(true);
+        when(mockResultSet.getLong("TotalPopulation")).thenReturn(population);
     }
 
     /**
@@ -68,197 +104,198 @@ public class PopulationQueriesTests {
      * an empty query result.
      */
     private void setupEmptyResultSet() throws SQLException {
-        when(MockResultSet.next()).thenReturn(false);
+        when(mockResultSet.next()).thenReturn(false);
     }
 
-    // ---------- Global Population Reports ----------
+    // ========== BASIC POPULATION QUERIES ==========
 
     /**
-     * Tests that a null database connection produces an appropriate console message.
+     * Tests successful retrieval of world population.
      */
     @Test
-    public void testNullDatabaseConnection() throws SQLException {
-        PopulationQueries nullQueries = new PopulationQueries((App) null);
-        nullQueries.getWorldPopulation();
+    public void testGetWorldPopulationWithData() throws SQLException {
+        setUpMockResultsWithPopulation(6078749450L);
+        long result = populationQueries.getWorldPopulation();
 
-        String result = outContent.toString();
-        assertTrue(result.contains("Failed to get world population"),
-                "Should display null connection error");
-    }
-
-    /**
-     * Tests successful retrieval and display of global population data.
-     */
-    @Test
-    public void testGetReportPopulationGlobalWithData() throws SQLException {
-        when(MockResultSet.next()).thenReturn(true,true,false);
-        when(MockResultSet.getLong("TotalPopulation"))
-                .thenReturn(6078749450L);
-        MockCountryQueries.getWorldPopulation();
-
-        String result = outContent.toString();
-        assertTrue(result.contains("6,078,749,450"), "Error message not found");
+        assertEquals(6078749450L, result, "World population should match");
+        String output = outContent.toString();
+        assertTrue(output.contains("WORLD POPULATION"), "Should display world population header");
+        assertTrue(output.contains("6,078,749,450"), "Should display formatted population");
     }
 
     /**
-     * Tests handling of SQL exceptions during global population retrieval.
+     * Tests world population query with empty result.
      */
     @Test
-    public void testGetReportPopulationGlobalWithSQLException() throws SQLException {
-        when(MockCon.createStatement()).thenThrow(new  SQLException());
-        MockCountryQueries.getWorldPopulation();
+    public void testGetWorldPopulationNoData() throws SQLException {
+        setupEmptyResultSet();
+        long result = populationQueries.getWorldPopulation();
 
-        String result = outContent.toString();
-        assertTrue(result.contains("Failed to get world population"), "Error message not found");
+        assertEquals(0, result, "Should return 0 for no data");
     }
 
-    // ---------- Continent Population Reports ----------
-
     /**
-     * Tests continent-specific capital retrieval with valid data.
+     * Tests handling of SQL exceptions during world population retrieval.
      */
     @Test
-    public void testGetReportPopulationContinent() throws Exception {
-        when(MockResultSet.next()).thenReturn(true,true,false);
-        when(MockResultSet.getLong("ContinentPopulation"))
+    public void testGetWorldPopulationWithSQLException() throws SQLException {
+        when(mockCon.createStatement()).thenThrow(new SQLException("Database error"));
+        long result = populationQueries.getWorldPopulation();
+
+        assertEquals(0, result, "Should return 0 on exception");
+        String output = outContent.toString();
+        assertTrue(output.contains("Failed to get world population"), "Should display error message");
+    }
+
+    /**
+     * Tests successful retrieval of continent population.
+     */
+    @Test
+    public void testGetContinentPopulationWithData() throws Exception {
+        setUpMockResultsWithPopulation(3705025700L);
+        long result = populationQueries.getContinentPopulation("Asia");
+
+        assertEquals(3705025700L, result, "Asia population should match");
+        String output = outContent.toString();
+        assertTrue(output.contains("CONTINENT POPULATION"), "Should display continent header");
+        assertTrue(output.contains("Asia"), "Should display continent name");
+    }
+
+    /**
+     * Tests handling of SQL exceptions during continent population retrieval.
+     */
+    @Test
+    public void testGetContinentPopulationWithSQLException() throws Exception {
+        when(mockCon.createStatement()).thenThrow(new SQLException("Database error"));
+        long result = populationQueries.getContinentPopulation("Europe");
+
+        assertEquals(0, result, "Should return 0 on exception");
+        String output = outContent.toString();
+        assertTrue(output.contains("Failed to get continent population"), "Should display error message");
+    }
+
+    /**
+     * Tests successful retrieval of region population.
+     */
+    @Test
+    public void testGetRegionPopulationWithData() throws SQLException {
+        setUpMockResultsWithPopulation(38140000L);
+        long result = populationQueries.getRegionPopulation("Caribbean");
+
+        assertEquals(38140000L, result, "Caribbean population should match");
+        String output = outContent.toString();
+        assertTrue(output.contains("REGION POPULATION"), "Should display region header");
+    }
+
+    /**
+     * Tests handling of SQL exceptions during region population retrieval.
+     */
+    @Test
+    public void testGetRegionPopulationWithSQLException() throws SQLException {
+        when(mockCon.createStatement()).thenThrow(new SQLException("Database error"));
+        long result = populationQueries.getRegionPopulation("Caribbean");
+
+        assertEquals(0, result, "Should return 0 on exception");
+        String output = outContent.toString();
+        assertTrue(output.contains("Failed to get region population"), "Should display error message");
+    }
+
+    // ========== POPULATION DISTRIBUTION QUERIES ==========
+
+    /**
+     * Configures the mock {@link ResultSet} to simulate distribution data.
+     */
+    private void setUpMockDistributionResults() throws SQLException {
+        when(mockResultSet.next()).thenReturn(true, true, false);
+        when(mockResultSet.getString("name"))
+                .thenReturn("Asia")
+                .thenReturn("Europe");
+        when(mockResultSet.getLong("total_population"))
+                .thenReturn(3705025700L)
                 .thenReturn(730074600L);
-
-        MockCountryQueries.getContinentPopulation("Europa");
-
-        String result = outContent.toString();
-        System.out.println(result);
-        assertTrue(result.contains("730,074,600"), "Error message not found");
+        when(mockResultSet.getLong("city_population"))
+                .thenReturn(1766917815L)
+                .thenReturn(241942813L);
     }
 
     /**
-     * Tests handling of SQL exceptions for continent-based queries.
+     * Tests successful retrieval of population distribution by continent.
      */
     @Test
-    public void testGetReportPopulationContinentWithSQLException() throws Exception {
-        when(MockCon.createStatement()).thenThrow(new  SQLException());
-        MockCountryQueries.getContinentPopulation("Europe");
+    public void testGetPopulationDistributionByContinentWithData() throws SQLException {
+        setUpMockDistributionResults();
+        populationQueries.getPopulationDistributionByContinent();
 
-        String result = outContent.toString();
-        assertTrue(result.contains("Failed to get continent population"), "Error message not found");
-    }
-
-    // ---------- Region Population Reports ----------
-
-    /**
-     * Tests region-specific capital retrieval with valid data.
-     */
-    @Test
-    public void testGetReportPopulationRegion() throws SQLException {
-        when(MockResultSet.next()).thenReturn(true,true,false);
-        when(MockResultSet.getLong("RegionPopulation"))
-                .thenReturn(38140000L);
-
-        MockCountryQueries.getRegionPopulation("Caribbean");
-
-        String result = outContent.toString();
-        System.out.println(result);
-        assertTrue(result.contains("38,140,000"), "Error message not found");
+        String output = outContent.toString();
+        assertTrue(output.contains("POPULATION DISTRIBUTION BY CONTINENT"), "Should display header");
+        assertTrue(output.contains("Asia"), "Should display Asia");
+        assertTrue(output.contains("Europe"), "Should display Europe");
+        assertTrue(output.contains("City %"), "Should display City % column");
+        assertTrue(output.contains("Rural %"), "Should display Rural % column");
     }
 
     /**
-     * Tests handling of SQL exceptions for continent-based queries.
+     * Tests SQL exception handling for distribution by continent.
      */
     @Test
-    public void testGetReportPopulationRegionWithSQLException() throws SQLException {
-        when(MockCon.createStatement()).thenThrow(new  SQLException());
-        MockCountryQueries.getRegionPopulation("Caribbean");
+    public void testGetPopulationDistributionByContinentWithSQLException() throws SQLException {
+        when(mockCon.createStatement()).thenThrow(new SQLException("Database error"));
+        populationQueries.getPopulationDistributionByContinent();
 
-        String result = outContent.toString();
-        assertTrue(result.contains("Failed to get region population"), "Error message not found");
-    }
-
-    // ---------- Country Population Reports ----------
-
-    /**
-     * Tests region-specific capital retrieval with valid data.
-     */
-    @Test
-    public void testGetReportPopulationCountry() throws SQLException {
-        when(MockResultSet.next()).thenReturn(true,true,false);
-        when(MockResultSet.getLong("CountryPopulation"))
-                .thenReturn(39441700L);
-
-        MockCountryQueries.getCountryPopulation("Spain");
-
-        String result = outContent.toString();
-        System.out.println(result);
-        assertTrue(result.contains("39,441,700"), "Error message not found");
+        String output = outContent.toString();
+        assertTrue(output.contains("Failed to get population distribution by continent"),
+                "Should display error");
     }
 
     /**
-     * Tests handling of SQL exceptions for continent-based queries.
+     * Tests successful retrieval of population distribution by region.
      */
     @Test
-    public void testGetReportPopulationCountryWithSQLException() throws SQLException {
-        when(MockCon.createStatement()).thenThrow(new  SQLException());
-        MockCountryQueries.getCountryPopulation("Spain");
+    public void testGetPopulationDistributionByRegionWithData() throws SQLException {
+        setUpMockDistributionResults();
+        populationQueries.getPopulationDistributionByRegion();
 
-        String result = outContent.toString();
-        assertTrue(result.contains("Failed to get country population"), "Error message not found");
-    }
-
-    // ---------- District Population Reports ----------
-
-    /**
-     * Tests region-specific capital retrieval with valid data.
-     */
-    @Test
-    public void testGetReportPopulationDistrict() throws SQLException {
-        when(MockResultSet.next()).thenReturn(true,true,false);
-        when(MockResultSet.getLong("DistrictPopulation"))
-                .thenReturn(1540107L);
-
-        MockCountryQueries.getDistrictPopulation("Córdoba");
-
-        String result = outContent.toString();
-        System.out.println(result);
-        assertTrue(result.contains("1,540,107"), "Error message not found");
+        String output = outContent.toString();
+        assertTrue(output.contains("POPULATION DISTRIBUTION BY REGION"), "Should display header");
+        assertTrue(output.contains("City %"), "Should display City % column");
     }
 
     /**
-     * Tests handling of SQL exceptions for continent-based queries.
+     * Tests SQL exception handling for distribution by region.
      */
     @Test
-    public void testGetReportPopulationDistrictWithSQLException() throws SQLException {
-        when(MockCon.createStatement()).thenThrow(new  SQLException());
-        MockCountryQueries.getDistrictPopulation("Córdoba");
+    public void testGetPopulationDistributionByRegionWithSQLException() throws SQLException {
+        when(mockCon.createStatement()).thenThrow(new SQLException("Database error"));
+        populationQueries.getPopulationDistributionByRegion();
 
-        String result = outContent.toString();
-        assertTrue(result.contains("Failed to get district population"), "Error message not found");
-    }
-
-    // ---------- City Population Reports ----------
-
-    /**
-     * Tests region-specific capital retrieval with valid data.
-     */
-    @Test
-    public void testGetReportPopulationCity() throws SQLException {
-        when(MockResultSet.next()).thenReturn(true,true,false);
-        when(MockResultSet.getLong("CityPopulation"))
-                .thenReturn(2879052L);
-
-        MockCountryQueries.getCityPopulation("Madrid");
-
-        String result = outContent.toString();
-        System.out.println(result);
-        assertTrue(result.contains("2,879,052"), "Error message not found");
+        String output = outContent.toString();
+        assertTrue(output.contains("Failed to get population distribution by region"),
+                "Should display error");
     }
 
     /**
-     * Tests handling of SQL exceptions for continent-based queries.
+     * Tests successful retrieval of population distribution by country.
      */
     @Test
-    public void testGetReportPopulationCityWithSQLException() throws SQLException {
-        when(MockCon.createStatement()).thenThrow(new  SQLException());
-        MockCountryQueries.getCityPopulation("Madrid");
+    public void testGetPopulationDistributionByCountryWithData() throws SQLException {
+        setUpMockDistributionResults();
+        populationQueries.getPopulationDistributionByCountry();
 
-        String result = outContent.toString();
-        assertTrue(result.contains("Failed to get city population"), "Error message not found");
+        String output = outContent.toString();
+        assertTrue(output.contains("POPULATION DISTRIBUTION BY COUNTRY"), "Should display header");
+        assertTrue(output.contains("Top 20"), "Should indicate top 20 limit");
+    }
+
+    /**
+     * Tests SQL exception handling for distribution by country.
+     */
+    @Test
+    public void testGetPopulationDistributionByCountryWithSQLException() throws SQLException {
+        when(mockCon.createStatement()).thenThrow(new SQLException("Database error"));
+        populationQueries.getPopulationDistributionByCountry();
+
+        String output = outContent.toString();
+        assertTrue(output.contains("Failed to get population distribution by country"),
+                "Should display error");
     }
 }

@@ -1,4 +1,8 @@
 package com.napier.sem2;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +34,7 @@ public class PopulationQueries {
      */
 
 
-    public String getWorldPopulation() {
+    public long getWorldPopulation() {
         try {
             //create an  SQL statement
             Statement stmt = con.createStatement();
@@ -44,14 +48,14 @@ public class PopulationQueries {
                 //Display the results in a formatted manner
                 System.out.println("\n=== WORLD POPULATION ===");
                 System.out.println("Total Population: " + String.format("%,d", totalPop));
-                return totalPop + "";
+                return totalPop;
             }
-            return "0";
+            return 0;
         } catch (Exception e) {
             //handle any exception that occur during every execution
             System.out.println(e.getMessage());
             System.out.println("Failed to get world population");
-            return "0";
+            return 0;
         }
     }
     /**
@@ -64,28 +68,29 @@ public class PopulationQueries {
      * @return long - The total population of the specified continent, or 0 if the query fails
      * @throws Exception If a database access error occurs
      */
-    public String getContinentPopulation(String continent) throws Exception{
+    public long getContinentPopulation(String continent){
         try {
             //create an SQL statement
             Statement stmt = con.createStatement();
             //define SQL query with continent filter
-            String strSelect = "SELECT SUM(Population) AS ContinentPopulation FROM country WHERE Continent = '" + continent + "' ";
+            String strSelect = "SELECT SUM(Population) AS TotalPopulation FROM country WHERE continent = '" + continent + "' ";
             //execute the query and get the result set
             ResultSet rset = stmt.executeQuery(strSelect);
             //check if result exists and extract the continent population
             if (rset.next()) {
-                long totalPop = rset.getLong("ContinentPopulation");
+                long totalPop = rset.getLong("TotalPopulation");
             //display the results in a formatted manner
                 System.out.println("\n=== CONTINENT POPULATION ===");
-                System.out.println("Continent Population of " + continent + ": " + String.format("%,d", totalPop));
-                return totalPop + "";
+                System.out.println("Continent: " + continent);
+                System.out.println("Total Population of " + continent + ": " + String.format("%,d", totalPop));
+                return totalPop;
             }
-            return "0";
+            return 0;
         } catch (Exception e) {
             //handle any exceptions that occur during query execution
             System.out.println(e.getMessage());
             System.out.println("Failed to get continent population");
-            return "0";
+            return 0;
         }
     }
     /**
@@ -97,30 +102,30 @@ public class PopulationQueries {
      * @param region - The name of the region (e.g., "Caribbean", "Southern Europe", "Eastern Africa")
      * @return long - The total population of the specified region, or 0 if the query fails
      */
-    public String getRegionPopulation(String region) {
+    public long getRegionPopulation(String region) {
         try {
             // Create an SQL statement
             Statement stmt = con.createStatement();
             // Define SQL query with region filter
-            String strSelect = "SELECT SUM(Population) AS RegionPopulation FROM country WHERE Region = '" + region + "' ";
+            String strSelect = "SELECT SUM(Population) AS TotalPopulation FROM country WHERE Region = '" + region + "' ";
             // Execute the query and get the result set
             ResultSet rset = stmt.executeQuery(strSelect);
             // Check if result exists and extract the region population
             if (rset.next()) {
-                long totalPop = rset.getLong("RegionPopulation");
+                long totalPop = rset.getLong("TotalPopulation");
                 // Display the results in a formatted manner
                 System.out.println("\n=== REGION POPULATION ===");
-                System.out.println("Region Population of " + region + ": " + String.format("%,d", totalPop));
-                return totalPop + "";
+                System.out.println("Region: " + region);
+                System.out.println("Total Population of "+ region + ": " + String.format("%,d", totalPop));
+                return totalPop;
             }
-
-            return "0";
+            return 0;
         } catch (Exception e) {
             // Handle any exceptions that occur during query execution
 
             System.out.println(e.getMessage());
             System.out.println("Failed to get region population");
-            return "0";
+            return 0;
         }
     }
     /**
@@ -131,29 +136,29 @@ public class PopulationQueries {
      * @param country - The name of the country (e.g., "China", "United States", "India")
      * @return long - The total population of the specified country, or 0 if the query fails
      */
-    public String getCountryPopulation(String country) {
+    public long getCountryPopulation(String country) {
         try {
             // Create an SQL statement
             Statement stmt = con.createStatement();
             // Define SQL query with country name filter
-            String strSelect = "SELECT SUM(Population) AS CountryPopulation FROM country WHERE Name = '" + country + "' ";
+            String strSelect = "SELECT SUM(Population) AS TotalPopulation FROM country WHERE Name = '" + country + "' ";
             // Execute the query and get the result set
             ResultSet rset = stmt.executeQuery(strSelect);
             // Check if result exists and extract the country population
 
             if (rset.next()) {
-                long totalPop = rset.getLong("CountryPopulation");
+                long totalPop = rset.getLong("TotalPopulation");
                 // Display the results in a formatted manner
                 System.out.println("\n=== COUNTRY POPULATION ===");
-                System.out.println("Country Population of " + country +": " + String.format("%,d", totalPop));
-                return totalPop + "";
+                System.out.println("Total Population of " + country + ": " + String.format("%,d", totalPop));
+                return totalPop;
             }
-            return "0";
+            return 0;
         } catch (Exception e) {
             // Handle any exceptions that occur during query execution
             System.out.println(e.getMessage());
-            System.out.println("Failed to get country population");
-            return "0";
+            System.out.println("Failed to get world population");
+            return 0;
         }
     }
     /**
@@ -165,28 +170,28 @@ public class PopulationQueries {
             * @param district - The name of the district (e.g., "California", "Ontario", "Queensland")
      * @return long - The total population of the specified district, or 0 if the query fails
      */
-    public String getDistrictPopulation(String district) {
+    public long getDistrictPopulation(String district) {
         try {
             // Create an SQL statement
             Statement stmt = con.createStatement();
             // Define SQL query with district filter - queries city table, not country
-            String strSelect = "SELECT SUM(Population) AS DistrictPopulation FROM city WHERE District = '" + district + "' ";
+            String strSelect = "SELECT SUM(Population) AS TotalPopulation FROM city WHERE District = '" + district + "' ";
             // Execute the query and get the result set
             ResultSet rset = stmt.executeQuery(strSelect);
-            // Check if result exists and extract the district population
+            // Check if result exists and extract the district populatio
             if (rset.next()) {
-                long totalPop = rset.getLong("DistrictPopulation");
+                long totalPop = rset.getLong("TotalPopulation");
                 // Display the results in a formatted manner
                 System.out.println("\n=== DISTRICT POPULATION ===");
-                System.out.println("District Population of " + district + ": " + String.format("%,d", totalPop));
-                return totalPop + "";
+                System.out.println("Total Population of " + district + ": " + String.format("%,d", totalPop));
+                return totalPop;
             }
-            return "0";
+            return 0;
         } catch (Exception e) {
             // Handle any exceptions that occur during query execution
             System.out.println(e.getMessage());
-            System.out.println("Failed to get district population");
-            return "0";
+            System.out.println("Failed to get world population");
+            return 0;
         }
     }
     /**
@@ -197,30 +202,30 @@ public class PopulationQueries {
      * @param city - The name of the city (e.g., "Mumbai", "Tokyo", "New York")
      * @return long - The population of the specified city, or 0 if the query fails
      */
-    public String getCityPopulation(String city) {
+    public long getCityPopulation(String city) {
         try {
             // Create an SQL statement
 
             Statement stmt = con.createStatement();
             // Define SQL query with city name filter - queries city table
-            String strSelect = "SELECT SUM(Population) AS CityPopulation FROM city WHERE Name = '" + city + "' ";
+            String strSelect = "SELECT SUM(Population) AS TotalPopulation FROM city WHERE Name = '" + city + "' ";
             // Execute the query and get the result set
             ResultSet rset = stmt.executeQuery(strSelect);
             // Check if result exists and extract the city population
             if (rset.next()) {
-                long totalPop = rset.getLong("CityPopulation");
+                long totalPop = rset.getLong("TotalPopulation");
                 // Display the results in a formatted manner
                 System.out.println("\n=== CITY POPULATION ===");
-                System.out.println("City Population of " + city + ": " + String.format("%,d", totalPop));
-                return totalPop + "";
+                System.out.println("Total Population of " + city + ": " + String.format("%,d", totalPop));
+                return totalPop;
             }
-            return "0";
+            return 0;
         } catch (Exception e) {
             // Handle any exceptions that occur during query execution
 
             System.out.println(e.getMessage());
-            System.out.println("Failed to get city population");
-            return "0";
+            System.out.println("Failed to get world population");
+            return 0;
         }
     }
 
@@ -238,7 +243,8 @@ public class PopulationQueries {
      * 3. Calculate rural population as (total - city population)
      * 4. Calculate percentages
      */
-    public void getPopulationDistributionByContinent() {
+    public List<Population> getPopulationDistributionByContinent() {
+        List<Population> populationList = new ArrayList<>();
         try {
             // SQL query to calculate population distribution by continent
             // Uses LEFT JOIN to include countries even if they have no cities in the database
@@ -246,7 +252,7 @@ public class PopulationQueries {
                     "SELECT " +
                             "    country.Continent AS name, " +
                             "    SUM(country.Population) AS total_population, " +
-                            "    COALESCE(SUM(city_pop.city_population), 0) AS city_population " +
+                            "    SUM(city_pop.city_population) AS city_population " +
                             "FROM country " +
                             "LEFT JOIN ( " +
                             "    SELECT CountryCode, SUM(Population) AS city_population " +
@@ -262,7 +268,7 @@ public class PopulationQueries {
 
             // Display header
             System.out.println("\n=== POPULATION DISTRIBUTION BY CONTINENT ===");
-            System.out.println(String.format("%-30s %15s %15s %10s %15s %10s",
+            System.out.println(String.format("%-13s %15s %15s %10s %15s %10s",
                     "Continent", "Total Pop", "City Pop", "City %", "Rural Pop", "Rural %"));
             System.out.println("--------------------------------------------------------------------------------------------");
 
@@ -277,28 +283,30 @@ public class PopulationQueries {
                 double cityPercent = (totalPop > 0) ? (cityPop * 100.0 / totalPop) : 0;
                 double ruralPercent = (totalPop > 0) ? (ruralPop * 100.0 / totalPop) : 0;
 
+                populationList.add(new Population(name,totalPop,cityPop, cityPercent, ruralPop, ruralPercent));
                 // Display formatted results
-                System.out.println(String.format("%-30s %,15d %,15d %9.2f%% %,15d %9.2f%%",
+                System.out.println(String.format("%-13s %,15d %,15d %9.2f%% %,15d %9.2f%%",
                         name, totalPop, cityPop, cityPercent, ruralPop, ruralPercent));
             }
-
         } catch (SQLException e) {
             System.out.println("SQL Exception: " + e.getMessage());
             System.out.println("Failed to get population distribution by continent");
         }
+        return populationList;
     }
 
     /**
      * Shows population distribution (total, in cities, not in cities) for each region.
      */
-    public void getPopulationDistributionByRegion() {
+    public List<Population> getPopulationDistributionByRegion() {
+        List<Population> populationList = new ArrayList<>();
         try {
             // SQL query to calculate population distribution by region
             String query =
                     "SELECT " +
                             "    country.Region AS name, " +
                             "    SUM(country.Population) AS total_population, " +
-                            "    COALESCE(SUM(city_pop.city_population), 0) AS city_population " +
+                            "    SUM(city_pop.city_population) AS city_population " +
                             "FROM country " +
                             "LEFT JOIN ( " +
                             "    SELECT CountryCode, SUM(Population) AS city_population " +
@@ -329,6 +337,7 @@ public class PopulationQueries {
                 double cityPercent = (totalPop > 0) ? (cityPop * 100.0 / totalPop) : 0;
                 double ruralPercent = (totalPop > 0) ? (ruralPop * 100.0 / totalPop) : 0;
 
+                populationList.add(new Population(name,totalPop,cityPop, cityPercent, ruralPop, ruralPercent));
                 // Display formatted results
                 System.out.println(String.format("%-30s %,15d %,15d %9.2f%% %,15d %9.2f%%",
                         name, totalPop, cityPop, cityPercent, ruralPop, ruralPercent));
@@ -338,34 +347,37 @@ public class PopulationQueries {
             System.out.println("SQL Exception: " + e.getMessage());
             System.out.println("Failed to get population distribution by region");
         }
+        return populationList;
     }
 
     /**
      * Shows population distribution (total, in cities, not in cities) for each country.
      * Limited to top 20 countries for readability.
      */
-    public void getPopulationDistributionByCountry() {
+    public  List<Population> getPopulationDistributionByCountry() {
+        List<Population> populationList = new ArrayList<>();
         try {
             // SQL query to calculate population distribution by country
             String query =
                     "SELECT " +
                             "    country.Name AS name, " +
                             "    country.Population AS total_population, " +
-                            "    COALESCE(city_pop.city_population, 0) AS city_population " +
+                            "    city_pop.city_population AS city_population " +
                             "FROM country " +
                             "LEFT JOIN ( " +
                             "    SELECT CountryCode, SUM(Population) AS city_population " +
                             "    FROM city " +
                             "    GROUP BY CountryCode " +
                             ") AS city_pop ON country.Code = city_pop.CountryCode " +
-                            "ORDER BY total_population DESC ";
+                            "ORDER BY total_population DESC " +
+                            "LIMIT 20";  // Limited to top 20 for readability
 
             // Execute query
             Statement stmt = con.createStatement();
             ResultSet rset = stmt.executeQuery(query);
 
             // Display header
-            System.out.println("\n=== POPULATION DISTRIBUTION BY COUNTRY=");
+            System.out.println("\n=== POPULATION DISTRIBUTION BY COUNTRY (Top 20) ===");
             System.out.println(String.format("%-30s %15s %15s %10s %15s %10s",
                     "Country", "Total Pop", "City Pop", "City %", "Rural Pop", "Rural %"));
             System.out.println("--------------------------------------------------------------------------------------------");
@@ -381,6 +393,7 @@ public class PopulationQueries {
                 double cityPercent = (totalPop > 0) ? (cityPop * 100.0 / totalPop) : 0;
                 double ruralPercent = (totalPop > 0) ? (ruralPop * 100.0 / totalPop) : 0;
 
+                populationList.add(new Population(name,totalPop,cityPop, cityPercent, ruralPop, ruralPercent));
                 // Display formatted results
                 System.out.println(String.format("%-30s %,15d %,15d %9.2f%% %,15d %9.2f%%",
                         name, totalPop, cityPop, cityPercent, ruralPop, ruralPercent));
@@ -389,6 +402,123 @@ public class PopulationQueries {
         } catch (SQLException e) {
             System.out.println("SQL Exception: " + e.getMessage());
             System.out.println("Failed to get population distribution by country");
+        }
+        return populationList;
+    }
+
+    // ============================================================
+    //                  REPORT OUTPUT METHODS
+    // ============================================================
+
+    public void outputPopulationGlobalReport(long population, String filename) {
+        StringBuilder sb = new StringBuilder();
+        // Print header
+        sb.append("Total Population of the World: " + population + "\r\n");
+        try {
+            new File("./reports/").mkdir();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(new File("./reports/" + filename + ".md")));
+            writer.write(sb.toString());
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void outputPopulationContinentReport(long population, String continent, String filename) {
+        StringBuilder sb = new StringBuilder();
+        // Print header
+        sb.append("Total Population of the Continent of " + continent + ": " + population + "\r\n");
+        try {
+            new File("./reports/").mkdir();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(new File("./reports/" + filename + ".md")));
+            writer.write(sb.toString());
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void outputPopulationRegionReport(long population, String region, String filename) {
+        StringBuilder sb = new StringBuilder();
+        // Print header
+        sb.append("Total Population of the Region of " + region + ": " + population + "\r\n");
+        try {
+            new File("./reports/").mkdir();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(new File("./reports/" + filename + ".md")));
+            writer.write(sb.toString());
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void outputPopulationCountryReport(long population, String country, String filename) {
+        StringBuilder sb = new StringBuilder();
+        // Print header
+        sb.append("Total Population of the Country of " + country + ": " + population + "\r\n");
+        try {
+            new File("./reports/").mkdir();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(new File("./reports/" + filename + ".md")));
+            writer.write(sb.toString());
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void outputPopulationDistrictReport(long population, String district, String filename) {
+        StringBuilder sb = new StringBuilder();
+        // Print header
+        sb.append("Total Population of the District of " + district + ": " + population + "\r\n");
+        try {
+            new File("./reports/").mkdir();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(new File("./reports/" + filename + ".md")));
+            writer.write(sb.toString());
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void outputPopulationCityReport(long population, String city, String filename) {
+        StringBuilder sb = new StringBuilder();
+        // Print header
+        sb.append("Total Population of the City of " + city + ": " + population + "\r\n");
+        try {
+            new File("./reports/").mkdir();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(new File("./reports/" + filename + ".md")));
+            writer.write(sb.toString());
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void outputPopulationDistributionReport(List<Population> populationList, String filename) {
+        // Check capitals is not null
+        if (populationList == null) {
+            System.out.println("No population distribution found");
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        // Print header
+        sb.append("| Name | Total Pop | City Pop | City Perc | Rural Pop | Rural Perc |\n");
+        // Loop over all capitals in the list
+        for (Population population : populationList) {
+            if (population == null) continue;
+            sb.append("| " + population.getName() + " | " + population.getTotalPop() + " | " + population.getCityPop()
+                    + " | " +  Math.round(population.getCityPercentage() * 100.0) / 100.0 + "% | " + population.getRuralPop() +
+                    " | " + Math.round(population.getRuralPercentage() * 100.0) / 100.0 + "% |\r\n");
+
+        }
+        try {
+            new File("./reports/").mkdir();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(new File("./reports/" + filename + ".md")));
+            writer.write(sb.toString());
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -108,13 +108,14 @@ public class App
      *             </ul>
      * @throws SQLException If a database access error occurs.
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws SQLException {
 
         // Create application instance
         App WorldReport = new App();
 
         List <City> report;
         List <Country> countryReport;
+        List <Population> populationReport;
 
         // Connect to the database (use default if no arguments provided)
         if(args.length < 1){
@@ -244,22 +245,58 @@ public class App
         // ===== Population Queries =====
         System.out.println("\n========== POPULATION QUERIES ==========\n");
 
-        // ===== Population Queries =====
-        PopulationQueries populationQueries = new PopulationQueries(WorldReport.con);
+        PopulationQueries popQueries = new PopulationQueries(WorldReport.con);
 
-        populationQueries.getWorldPopulation();
-        populationQueries.getContinentPopulation("Europe");
-        populationQueries.getRegionPopulation("Caribbean");
-        populationQueries.getCountryPopulation("Spain");
-        populationQueries.getDistrictPopulation("Córdoba");
-        populationQueries.getCityPopulation("Madrid");
+        // Basic population queries
+        popQueries.getWorldPopulation();
 
-        populationQueries.getPopulationDistributionByContinent();
-        populationQueries.getPopulationDistributionByRegion();
-        populationQueries.getPopulationDistributionByCountry();
+        try {
+            popQueries.getContinentPopulation("Asia");
+            popQueries.getContinentPopulation("Europe");
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+
+        popQueries.getRegionPopulation("Caribbean");
+        popQueries.getRegionPopulation("Western Europe");
+
+        // Population distribution queries
+        System.out.println("\n========== POPULATION DISTRIBUTION QUERIES ==========\n");
+        popQueries.getPopulationDistributionByContinent();
+        popQueries.getPopulationDistributionByRegion();
+        popQueries.getPopulationDistributionByCountry();
 
         System.out.println("\n========== ALL QUERIES COMPLETED ==========\n");
-// Disconnect from database
+
+        // ===== Report Output =====
+        long population = popQueries.getWorldPopulation();
+        popQueries.outputPopulationGlobalReport(population, "Population Global Report");
+
+        population = popQueries.getContinentPopulation("Europe");
+        popQueries.outputPopulationContinentReport(population, "Europe","Population Continent Report");
+
+        population = popQueries.getRegionPopulation("Caribbean");
+        popQueries.outputPopulationRegionReport(population, "Caribbean","Population Region Report");
+
+        population = popQueries.getCountryPopulation("Spain");
+        popQueries.outputPopulationCountryReport(population, "Spain","Population Country Report");
+
+        population = popQueries.getDistrictPopulation("Madrid");
+        popQueries.outputPopulationDistrictReport(population, "Madrid","Population District Report");
+
+        population = popQueries.getCityPopulation("Madrid");
+        popQueries.outputPopulationCityReport(population, "Madrid","Population City Report");
+
+        populationReport = popQueries.getPopulationDistributionByContinent();
+        popQueries.outputPopulationDistributionReport(populationReport, "Population Distribution Continent Report");
+
+        populationReport = popQueries.getPopulationDistributionByRegion();
+        popQueries.outputPopulationDistributionReport(populationReport, "Population Distribution Region Report");
+
+        populationReport = popQueries.getPopulationDistributionByCountry();
+        popQueries.outputPopulationDistributionReport(populationReport, "Population Distribution Country Report");
+
+        // Disconnect from database
         WorldReport.disconnect();}
 
 }
