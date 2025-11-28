@@ -1,4 +1,8 @@
 package com.napier.sem2;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,12 +68,12 @@ public class PopulationQueries {
      * @return long - The total population of the specified continent, or 0 if the query fails
      * @throws Exception If a database access error occurs
      */
-    public long getContinentPopulation(String continent) throws Exception{
+    public long getContinentPopulation(String continent){
         try {
             //create an SQL statement
             Statement stmt = con.createStatement();
             //define SQL query with continent filter
-            String strSelect = "SELECT SUM(Population) AS TotalPopulation FROM country  "+"WHERE continent = '" + continent + "' ";
+            String strSelect = "SELECT SUM(Population) AS TotalPopulation FROM country WHERE continent = '" + continent + "' ";
             //execute the query and get the result set
             ResultSet rset = stmt.executeQuery(strSelect);
             //check if result exists and extract the continent population
@@ -78,7 +82,7 @@ public class PopulationQueries {
             //display the results in a formatted manner
                 System.out.println("\n=== CONTINENT POPULATION ===");
                 System.out.println("Continent: " + continent);
-                System.out.println("Total Population: " + String.format("%,d", totalPop));
+                System.out.println("Total Population of " + continent + ": " + String.format("%,d", totalPop));
                 return totalPop;
             }
             return 0;
@@ -103,7 +107,7 @@ public class PopulationQueries {
             // Create an SQL statement
             Statement stmt = con.createStatement();
             // Define SQL query with region filter
-            String strSelect = "SELECT SUM(Population) AS TotalPopulation FROM country "+"WHERE region = '" + region + "' ";
+            String strSelect = "SELECT SUM(Population) AS TotalPopulation FROM country WHERE Region = '" + region + "' ";
             // Execute the query and get the result set
             ResultSet rset = stmt.executeQuery(strSelect);
             // Check if result exists and extract the region population
@@ -112,7 +116,7 @@ public class PopulationQueries {
                 // Display the results in a formatted manner
                 System.out.println("\n=== REGION POPULATION ===");
                 System.out.println("Region: " + region);
-                System.out.println("Total Population: " + String.format("%,d", totalPop));
+                System.out.println("Total Population of "+ region + ": " + String.format("%,d", totalPop));
                 return totalPop;
             }
             return 0;
@@ -137,7 +141,7 @@ public class PopulationQueries {
             // Create an SQL statement
             Statement stmt = con.createStatement();
             // Define SQL query with country name filter
-            String strSelect = "SELECT SUM(Population) AS TotalPopulation FROM country "+"WHERE region = '" + country + "' ";
+            String strSelect = "SELECT SUM(Population) AS TotalPopulation FROM country WHERE Name = '" + country + "' ";
             // Execute the query and get the result set
             ResultSet rset = stmt.executeQuery(strSelect);
             // Check if result exists and extract the country population
@@ -145,8 +149,8 @@ public class PopulationQueries {
             if (rset.next()) {
                 long totalPop = rset.getLong("TotalPopulation");
                 // Display the results in a formatted manner
-                System.out.println("\n=== WORLD POPULATION ===");
-                System.out.println("Total Population: " + String.format("%,d", totalPop));
+                System.out.println("\n=== COUNTRY POPULATION ===");
+                System.out.println("Total Population of " + country + ": " + String.format("%,d", totalPop));
                 return totalPop;
             }
             return 0;
@@ -171,15 +175,15 @@ public class PopulationQueries {
             // Create an SQL statement
             Statement stmt = con.createStatement();
             // Define SQL query with district filter - queries city table, not country
-            String strSelect = "SELECT SUM(Population) AS TotalPopulation FROM country "+"WHERE region = '" + district + "' ";
+            String strSelect = "SELECT SUM(Population) AS TotalPopulation FROM city WHERE District = '" + district + "' ";
             // Execute the query and get the result set
             ResultSet rset = stmt.executeQuery(strSelect);
             // Check if result exists and extract the district populatio
             if (rset.next()) {
                 long totalPop = rset.getLong("TotalPopulation");
                 // Display the results in a formatted manner
-                System.out.println("\n=== WORLD POPULATION ===");
-                System.out.println("Total Population: " + String.format("%,d", totalPop));
+                System.out.println("\n=== DISTRICT POPULATION ===");
+                System.out.println("Total Population of " + district + ": " + String.format("%,d", totalPop));
                 return totalPop;
             }
             return 0;
@@ -204,15 +208,15 @@ public class PopulationQueries {
 
             Statement stmt = con.createStatement();
             // Define SQL query with city name filter - queries city table
-            String strSelect = "SELECT SUM(Population) AS TotalPopulation FROM country "+"WHERE region = '" + city + "' ";
+            String strSelect = "SELECT SUM(Population) AS TotalPopulation FROM city WHERE Name = '" + city + "' ";
             // Execute the query and get the result set
             ResultSet rset = stmt.executeQuery(strSelect);
             // Check if result exists and extract the city population
             if (rset.next()) {
                 long totalPop = rset.getLong("TotalPopulation");
                 // Display the results in a formatted manner
-                System.out.println("\n=== WORLD POPULATION ===");
-                System.out.println("Total Population: " + String.format("%,d", totalPop));
+                System.out.println("\n=== CITY POPULATION ===");
+                System.out.println("Total Population of " + city + ": " + String.format("%,d", totalPop));
                 return totalPop;
             }
             return 0;
@@ -222,295 +226,6 @@ public class PopulationQueries {
             System.out.println(e.getMessage());
             System.out.println("Failed to get world population");
             return 0;
-        }
-    }
-
-    /**
-     * Retrieves all capital cities in the world ranked by population.
-     * Joins the city and country tables where city.ID matches country.Capital.
-     *
-     * SQL Query:
-     * SELECT city.Name, country.Name, city.Population
-     * FROM city JOIN country ON city.ID = country.Capital
-     * ORDER BY city.Population DESC
-     */
-    public void getAllCapitalsInWorld() {
-        try {
-            // SQL query to get all capitals globally
-            String query =
-                    "SELECT city.Name AS capital_name, country.Name AS country_name, city.Population AS population " +
-                            "FROM city " +
-                            "JOIN country ON city.ID = country.Capital " +
-                            "ORDER BY city.Population DESC";
-
-            // Execute query
-            Statement stmt = con.createStatement();
-            ResultSet rset = stmt.executeQuery(query);
-
-            // Display header
-            System.out.println("\n=== ALL CAPITAL CITIES IN THE WORLD ===");
-            System.out.println(String.format("%-30s %-30s %15s", "Capital", "Country", "Population"));
-            System.out.println("------------------------------------------------------------------------");
-
-            // Display results
-            while (rset.next()) {
-                System.out.println(String.format("%-30s %-30s %,15d",
-                        rset.getString("capital_name"),
-                        rset.getString("country_name"),
-                        rset.getInt("population")));
-            }
-
-        } catch (SQLException e) {
-            System.out.println("SQL Exception: " + e.getMessage());
-            System.out.println("Failed to get all capitals in the world");
-        }
-    }
-
-    /**
-     * Retrieves all capital cities in a specific continent ranked by population.
-     *
-     * SQL Query:
-     * SELECT city.Name, country.Name, city.Population
-     * FROM city JOIN country ON city.ID = country.Capital
-     * WHERE country.Continent = ?
-     * ORDER BY city.Population DESC
-     *
-     * @param continent - The name of the continent (e.g., "Asia", "Europe")
-     */
-    public void getAllCapitalsInContinent(String continent) {
-        try {
-            // SQL query to get all capitals in a continent
-            String query =
-                    "SELECT city.Name AS capital_name, country.Name AS country_name, city.Population AS population " +
-                            "FROM city " +
-                            "JOIN country ON city.ID = country.Capital " +
-                            "WHERE country.Continent = ? " +
-                            "ORDER BY city.Population DESC";
-
-            // Use PreparedStatement to prevent SQL injection
-            PreparedStatement pstmt = con.prepareStatement(query);
-            pstmt.setString(1, continent);
-            ResultSet rset = pstmt.executeQuery();
-
-            // Display header
-            System.out.println("\n=== ALL CAPITALS IN " + continent + " ===");
-            System.out.println(String.format("%-30s %-30s %15s", "Capital", "Country", "Population"));
-            System.out.println("------------------------------------------------------------------------");
-
-            // Display results
-            while (rset.next()) {
-                System.out.println(String.format("%-30s %-30s %,15d",
-                        rset.getString("capital_name"),
-                        rset.getString("country_name"),
-                        rset.getInt("population")));
-            }
-
-        } catch (SQLException e) {
-            System.out.println("SQL Exception: " + e.getMessage());
-            System.out.println("Failed to get capitals in " + continent);
-        }
-    }
-
-    /**
-     * Retrieves all capital cities in a specific region ranked by population.
-     *
-     * SQL Query:
-     * SELECT city.Name, country.Name, city.Population
-     * FROM city JOIN country ON city.ID = country.Capital
-     * WHERE country.Region = ?
-     * ORDER BY city.Population DESC
-     *
-     * @param region - The name of the region (e.g., "Caribbean", "Southern Europe")
-     */
-    public void getAllCapitalsInRegion(String region) {
-        try {
-            // SQL query to get all capitals in a region
-            String query =
-                    "SELECT city.Name AS capital_name, country.Name AS country_name, city.Population AS population " +
-                            "FROM city " +
-                            "JOIN country ON city.ID = country.Capital " +
-                            "WHERE country.Region = ? " +
-                            "ORDER BY city.Population DESC";
-
-            // Use PreparedStatement to prevent SQL injection
-            PreparedStatement pstmt = con.prepareStatement(query);
-            pstmt.setString(1, region);
-            ResultSet rset = pstmt.executeQuery();
-
-            // Display header
-            System.out.println("\n=== ALL CAPITALS IN " + region + " ===");
-            System.out.println(String.format("%-30s %-30s %15s", "Capital", "Country", "Population"));
-            System.out.println("------------------------------------------------------------------------");
-
-            // Display results
-            while (rset.next()) {
-                System.out.println(String.format("%-30s %-30s %,15d",
-                        rset.getString("capital_name"),
-                        rset.getString("country_name"),
-                        rset.getInt("population")));
-            }
-
-        } catch (SQLException e) {
-            System.out.println("SQL Exception: " + e.getMessage());
-            System.out.println("Failed to get capitals in " + region);
-        }
-    }
-
-    /**
-     * Retrieves the top N populated capital cities in the world.
-     *
-     * SQL Query:
-     * SELECT city.Name, country.Name, city.Population
-     * FROM city JOIN country ON city.ID = country.Capital
-     * ORDER BY city.Population DESC LIMIT N
-     *
-     * @param n - The number of top capital cities to retrieve
-     */
-    public void getTopCapitalsInWorld(int n) {
-        // Validate input parameter
-        if (n <= 0) {
-            System.out.println("Invalid number: N must be greater than 0");
-            return;
-        }
-
-        try {
-            // SQL query to get top N capitals globally
-            String query =
-                    "SELECT city.Name AS capital_name, country.Name AS country_name, city.Population AS population " +
-                            "FROM city " +
-                            "JOIN country ON city.ID = country.Capital " +
-                            "ORDER BY city.Population DESC " +
-                            "LIMIT ?";
-
-            // Use PreparedStatement to prevent SQL injection
-            PreparedStatement pstmt = con.prepareStatement(query);
-            pstmt.setInt(1, n);
-            ResultSet rset = pstmt.executeQuery();
-
-            // Display header
-            System.out.println("\n=== TOP " + n + " CAPITAL CITIES IN THE WORLD ===");
-            System.out.println(String.format("%-30s %-30s %15s", "Capital", "Country", "Population"));
-            System.out.println("------------------------------------------------------------------------");
-
-            // Display results
-            while (rset.next()) {
-                System.out.println(String.format("%-30s %-30s %,15d",
-                        rset.getString("capital_name"),
-                        rset.getString("country_name"),
-                        rset.getInt("population")));
-            }
-
-        } catch (SQLException e) {
-            System.out.println("SQL Exception: " + e.getMessage());
-            System.out.println("Failed to get top " + n + " capitals in the world");
-        }
-    }
-
-    /**
-     * Retrieves the top N populated capital cities in a specific continent.
-     *
-     * SQL Query:
-     * SELECT city.Name, country.Name, city.Population
-     * FROM city JOIN country ON city.ID = country.Capital
-     * WHERE country.Continent = ?
-     * ORDER BY city.Population DESC LIMIT N
-     *
-     * @param continent - The name of the continent (e.g., "Asia", "Europe")
-     * @param n - The number of top capital cities to retrieve
-     */
-    public void getTopCapitalsInContinent(String continent, int n) {
-        // Validate input parameters
-        if (n <= 0 || continent == null || continent.isEmpty()) {
-            System.out.println("Invalid parameters");
-            return;
-        }
-
-        try {
-            // SQL query to get top N capitals in a continent
-            String query =
-                    "SELECT city.Name AS capital_name, country.Name AS country_name, city.Population AS population " +
-                            "FROM city " +
-                            "JOIN country ON city.ID = country.Capital " +
-                            "WHERE country.Continent = ? " +
-                            "ORDER BY city.Population DESC " +
-                            "LIMIT ?";
-
-            // Use PreparedStatement to prevent SQL injection
-            PreparedStatement pstmt = con.prepareStatement(query);
-            pstmt.setString(1, continent);
-            pstmt.setInt(2, n);
-            ResultSet rset = pstmt.executeQuery();
-
-            // Display header
-            System.out.println("\n=== TOP " + n + " CAPITALS IN " + continent + " ===");
-            System.out.println(String.format("%-30s %-30s %15s", "Capital", "Country", "Population"));
-            System.out.println("------------------------------------------------------------------------");
-
-            // Display results
-            while (rset.next()) {
-                System.out.println(String.format("%-30s %-30s %,15d",
-                        rset.getString("capital_name"),
-                        rset.getString("country_name"),
-                        rset.getInt("population")));
-            }
-
-        } catch (SQLException e) {
-            System.out.println("SQL Exception: " + e.getMessage());
-            System.out.println("Failed to get top " + n + " capitals in " + continent);
-        }
-    }
-
-    /**
-     * Retrieves the top N populated capital cities in a specific region.
-     *
-     * SQL Query:
-     * SELECT city.Name, country.Name, city.Population
-     * FROM city JOIN country ON city.ID = country.Capital
-     * WHERE country.Region = ?
-     * ORDER BY city.Population DESC LIMIT N
-     *
-     * @param region - The name of the region (e.g., "Caribbean", "Southern Europe")
-     * @param n - The number of top capital cities to retrieve
-     */
-    public void getTopCapitalsInRegion(String region, int n) {
-        // Validate input parameters
-        if (n <= 0 || region == null || region.isEmpty()) {
-            System.out.println("Invalid parameters");
-            return;
-        }
-
-        try {
-            // SQL query to get top N capitals in a region
-            String query =
-                    "SELECT city.Name AS capital_name, country.Name AS country_name, city.Population AS population " +
-                            "FROM city " +
-                            "JOIN country ON city.ID = country.Capital " +
-                            "WHERE country.Region = ? " +
-                            "ORDER BY city.Population DESC " +
-                            "LIMIT ?";
-
-            // Use PreparedStatement to prevent SQL injection
-            PreparedStatement pstmt = con.prepareStatement(query);
-            pstmt.setString(1, region);
-            pstmt.setInt(2, n);
-            ResultSet rset = pstmt.executeQuery();
-
-            // Display header
-            System.out.println("\n=== TOP " + n + " CAPITALS IN " + region + " ===");
-            System.out.println(String.format("%-30s %-30s %15s", "Capital", "Country", "Population"));
-            System.out.println("------------------------------------------------------------------------");
-
-            // Display results
-            while (rset.next()) {
-                System.out.println(String.format("%-30s %-30s %,15d",
-                        rset.getString("capital_name"),
-                        rset.getString("country_name"),
-                        rset.getInt("population")));
-            }
-
-        } catch (SQLException e) {
-            System.out.println("SQL Exception: " + e.getMessage());
-            System.out.println("Failed to get top " + n + " capitals in " + region);
         }
     }
 
@@ -536,7 +251,7 @@ public class PopulationQueries {
                     "SELECT " +
                             "    country.Continent AS name, " +
                             "    SUM(country.Population) AS total_population, " +
-                            "    COALESCE(SUM(city_pop.city_population), 0) AS city_population " +
+                            "    SUM(city_pop.city_population) AS city_population " +
                             "FROM country " +
                             "LEFT JOIN ( " +
                             "    SELECT CountryCode, SUM(Population) AS city_population " +
@@ -552,7 +267,7 @@ public class PopulationQueries {
 
             // Display header
             System.out.println("\n=== POPULATION DISTRIBUTION BY CONTINENT ===");
-            System.out.println(String.format("%-30s %15s %15s %10s %15s %10s",
+            System.out.println(String.format("%-13s %15s %15s %10s %15s %10s",
                     "Continent", "Total Pop", "City Pop", "City %", "Rural Pop", "Rural %"));
             System.out.println("--------------------------------------------------------------------------------------------");
 
@@ -568,7 +283,7 @@ public class PopulationQueries {
                 double ruralPercent = (totalPop > 0) ? (ruralPop * 100.0 / totalPop) : 0;
 
                 // Display formatted results
-                System.out.println(String.format("%-30s %,15d %,15d %9.2f%% %,15d %9.2f%%",
+                System.out.println(String.format("%-13s %,15d %,15d %9.2f%% %,15d %9.2f%%",
                         name, totalPop, cityPop, cityPercent, ruralPop, ruralPercent));
             }
 
@@ -588,7 +303,7 @@ public class PopulationQueries {
                     "SELECT " +
                             "    country.Region AS name, " +
                             "    SUM(country.Population) AS total_population, " +
-                            "    COALESCE(SUM(city_pop.city_population), 0) AS city_population " +
+                            "    (city_pop.city_population) AS city_population " +
                             "FROM country " +
                             "LEFT JOIN ( " +
                             "    SELECT CountryCode, SUM(Population) AS city_population " +
@@ -641,7 +356,7 @@ public class PopulationQueries {
                     "SELECT " +
                             "    country.Name AS name, " +
                             "    country.Population AS total_population, " +
-                            "    COALESCE(city_pop.city_population, 0) AS city_population " +
+                            "    city_pop.city_population AS city_population " +
                             "FROM country " +
                             "LEFT JOIN ( " +
                             "    SELECT CountryCode, SUM(Population) AS city_population " +
@@ -680,6 +395,124 @@ public class PopulationQueries {
         } catch (SQLException e) {
             System.out.println("SQL Exception: " + e.getMessage());
             System.out.println("Failed to get population distribution by country");
+        }
+    }
+
+    // ============================================================
+    //                  REPORT OUTPUT METHODS
+    // ============================================================
+
+    /**
+     * Outputs a list of capital cities to a Markdown (.md) report file.
+     * @param population Represent the total population
+     * @param filename The output filename (without extension).
+     */
+    public void outputPopulationGlobalReport(long population, String filename) {
+        StringBuilder sb = new StringBuilder();
+        // Print header
+        sb.append("Total Population of the World: " + population + "\r\n");
+        try {
+            new File("./reports/").mkdir();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(new File("./reports/" + filename + ".md")));
+            writer.write(sb.toString());
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Outputs a list of capital cities to a Markdown (.md) report file.
+     * @param population Represent the total population
+     * @param filename The output filename (without extension).
+     */
+    public void outputPopulationContinentReport(long population, String continent, String filename) {
+        StringBuilder sb = new StringBuilder();
+        // Print header
+        sb.append("Total Population of the Continent of " + continent + ": " + population + "\r\n");
+        try {
+            new File("./reports/").mkdir();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(new File("./reports/" + filename + ".md")));
+            writer.write(sb.toString());
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Outputs a list of capital cities to a Markdown (.md) report file.
+     * @param population Represent the total population
+     * @param filename The output filename (without extension).
+     */
+    public void outputPopulationRegionReport(long population, String region, String filename) {
+        StringBuilder sb = new StringBuilder();
+        // Print header
+        sb.append("Total Population of the Region of " + region + ": " + population + "\r\n");
+        try {
+            new File("./reports/").mkdir();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(new File("./reports/" + filename + ".md")));
+            writer.write(sb.toString());
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Outputs a list of capital cities to a Markdown (.md) report file.
+     * @param population Represent the total population
+     * @param filename The output filename (without extension).
+     */
+    public void outputPopulationCountryReport(long population, String country, String filename) {
+        StringBuilder sb = new StringBuilder();
+        // Print header
+        sb.append("Total Population of the Country of " + country + ": " + population + "\r\n");
+        try {
+            new File("./reports/").mkdir();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(new File("./reports/" + filename + ".md")));
+            writer.write(sb.toString());
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Outputs a list of capital cities to a Markdown (.md) report file.
+     * @param population Represent the total population
+     * @param filename The output filename (without extension).
+     */
+    public void outputPopulationDistrictReport(long population, String district, String filename) {
+        StringBuilder sb = new StringBuilder();
+        // Print header
+        sb.append("Total Population of the District of " + district + ": " + population + "\r\n");
+        try {
+            new File("./reports/").mkdir();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(new File("./reports/" + filename + ".md")));
+            writer.write(sb.toString());
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Outputs a list of capital cities to a Markdown (.md) report file.
+     * @param population Represent the total population
+     * @param filename The output filename (without extension).
+     */
+    public void outputPopulationCityReport(long population, String city, String filename) {
+        StringBuilder sb = new StringBuilder();
+        // Print header
+        sb.append("Total Population of the City of " + city + ": " + population + "\r\n");
+        try {
+            new File("./reports/").mkdir();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(new File("./reports/" + filename + ".md")));
+            writer.write(sb.toString());
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

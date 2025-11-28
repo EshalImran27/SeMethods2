@@ -246,7 +246,7 @@ public class App
 
         PopulationQueries popQueries = new PopulationQueries(WorldReport.con);
 
-// Basic population queries
+        // Basic population queries
         popQueries.getWorldPopulation();
 
         try {
@@ -259,23 +259,34 @@ public class App
         popQueries.getRegionPopulation("Caribbean");
         popQueries.getRegionPopulation("Western Europe");
 
-// Capital city population queries
-        System.out.println("\n========== CAPITAL CITY POPULATION QUERIES ==========\n");
-        popQueries.getAllCapitalsInWorld();
-        popQueries.getAllCapitalsInContinent("Europe");
-        popQueries.getAllCapitalsInRegion("Caribbean");
-        popQueries.getTopCapitalsInWorld(10);
-        popQueries.getTopCapitalsInContinent("Asia", 5);
-        popQueries.getTopCapitalsInRegion("Western Europe", 3);
-
-// Population distribution queries
+        // Population distribution queries
         System.out.println("\n========== POPULATION DISTRIBUTION QUERIES ==========\n");
         popQueries.getPopulationDistributionByContinent();
         popQueries.getPopulationDistributionByRegion();
         popQueries.getPopulationDistributionByCountry();
 
         System.out.println("\n========== ALL QUERIES COMPLETED ==========\n");
-// Disconnect from database
+
+        // ===== Report Output =====
+        long population = popQueries.getWorldPopulation();
+        popQueries.outputPopulationGlobalReport(population, "Population Global Report");
+
+        population = popQueries.getContinentPopulation("Europe");
+        popQueries.outputPopulationContinentReport(population, "Europe","Population Continent Report");
+
+        population = popQueries.getRegionPopulation("Caribbean");
+        popQueries.outputPopulationRegionReport(population, "Caribbean","Population Region Report");
+
+        population = popQueries.getCountryPopulation("Spain");
+        popQueries.outputPopulationCountryReport(population, "Spain","Population Country Report");
+
+        population = popQueries.getDistrictPopulation("Madrid");
+        popQueries.outputPopulationDistrictReport(population, "Madrid","Population District Report");
+
+        population = popQueries.getCityPopulation("Madrid");
+        popQueries.outputPopulationCityReport(population, "Madrid","Population City Report");
+
+        // Disconnect from database
         WorldReport.disconnect();}
 
 }
